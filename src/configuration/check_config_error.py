@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/09 16:32:24 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/09 16:44:10 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -36,3 +36,5 @@ def check_file(filename: str) -> None:
     except IsADirectoryError:
         send_error(ConfigurationError, f"Expected a file, but got directory "
                    f"{filename}. Please provide a file.")
+    except Exception:
+        send_error(ConfigurationError, "Unexcepted exception.")
