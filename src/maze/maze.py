@@ -6,20 +6,21 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/10 15:31:19 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/10 15:52:47 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 from enum import Enum
 from typing import Tuple
+from termcolor import colored
 
 
 class Cell(Enum):
-    ENTRY = "E"
-    EXIT = "X"
+    ENTRY = colored("█", "light_green")
+    EXIT = colored("█", "red")
     BLANK = " "
-    WALL = "█"
-    STRICT = "░"
-    SOLVE = "*"
+    WALL = colored("█", "yellow")
+    STRICT = colored("░", "yellow")
+    SOLVE = colored("8", "cyan")
 
 
 class MazeError(Exception):
