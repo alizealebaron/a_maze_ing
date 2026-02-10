@@ -1,6 +1,16 @@
+# ************************************************************************* #
+#                                                                           #
+#                                                      :::      ::::::::    #
+#  maze.py                                           :+:      :+:    :+:    #
+#                                                  +:+ +:+         +:+      #
+#  By: alebaron, tcolson                         +#+  +:+       +#+         #
+#                                              +#+#+#+#+#+   +#+            #
+#  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
+#  Updated: 2026/02/10 15:31:19 by tcolson         ###   ########.fr        #
+#                                                                           #
+# ************************************************************************* #
 from enum import Enum
 from typing import Tuple
-from random import randint
 
 
 class Cell(Enum):
@@ -26,17 +36,16 @@ class Maze:
         self.maze: dict = {}
         for x in range(width):
             for y in range(height):
-                # if (x == 0 or y == 0 or x == width - 1 or y == height - 1):
-                #     self.maze.update({(x, y): Cell.STRICT})
-                # else:
                 self.maze.update({(x, y): Cell.WALL})
         self.put_logo()
         try:
             self.change_cell(entry, Cell.ENTRY)
+            self.entry = entry
         except MazeError:
             print("Error: can't place entry")
         try:
             self.change_cell(exit, Cell.EXIT)
+            self.exit = exit
         except MazeError:
             print("Error: can't place exit")
 
@@ -90,12 +99,3 @@ class Maze:
         for x in range(self.width + 2):
             print(Cell.STRICT.value, end="")
         print()
-
-
-m = Maze(9, 7, (0, 0), (5, 2))
-try:
-    # m.change_cell((2, 1), Cell.BLANK)
-    # m.change_cell((3, 1), Cell.BLANK)
-    m.show_maze()
-except Exception as e:
-    print(e)
