@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/12 15:03:51 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/12 15:53:29 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -20,7 +20,7 @@ from src.output.output import put_maze_val
 from src.menu.menu import print_menu, manage_user_input
 from src.utils.error import print_error, send_error, MenuError
 from src.configuration.check_config_error import get_config, ConfigurationError
-from src.maze.generation import new
+from src.maze.generation import new, hunt_and_kill
 
 
 # +-------------------------------------------------------------------------+
@@ -36,10 +36,13 @@ if __name__ == "__main__":
     if (argc != 2):
         send_error(ConfigurationError(), "Wrong arguments. "
                    "Need one file.")
-    
+
     m = Maze(19, 14, (0, 0), (5, 2))
+
     # Configuration recovery
     config = get_config(argv[1])
+
+    hunt_and_kill(m, config)
 
     # Displaying the maze
     m.show_maze()
