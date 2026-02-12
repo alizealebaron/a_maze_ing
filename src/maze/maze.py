@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/10 15:52:47 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/12 14:30:33 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 from enum import Enum
@@ -51,6 +51,9 @@ class Maze:
             print("Error: can't place exit")
 
     def change_cell(self, cell: Tuple[int, int], val: Cell) -> None:
+        x, y = cell
+        if x > self.width or y > self.height:
+            raise MazeError("Cell is not even in the maze")
         if cell in [self.entry, self.exit] or self.maze[cell] == Cell.STRICT:
             raise MazeError(f"This cell can't be edited, {cell}")
         if not isinstance(val, Cell):
