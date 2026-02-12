@@ -6,21 +6,49 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/12 14:30:33 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/12 16:21:24 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 from enum import Enum
-from typing import Tuple
-from termcolor import colored
+from typing import Tuple, Dict
+
+
+class Color(Enum):
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    REVERSE = "\033[7m"
+
+    BLACK = "\033[30m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    MAGENTA = "\033[35m"
+    CYAN = "\033[36m"
+    LIGHT_GRAY = "\033[37m"
+
+    DARK_GRAY = "\033[90m"
+    BRIGHT_RED = "\033[91m"
+    BRIGHT_GREEN = "\033[92m"
+    GOLD = "\033[93m"
+    SKY_BLUE = "\033[94m"
+    PINK = "\033[95m"
+    TURQUOISE = "\033[96m"
+    WHITE = "\033[97m"
+
+    ORANGE = "\033[38;5;208m"
+    CORAL = "\033[38;5;203m"
+    LIME = "\033[38;5;118m"
 
 
 class Cell(Enum):
-    ENTRY = colored("█", "light_green")
-    EXIT = colored("█", "red")
+    ENTRY = "E"
+    EXIT = "X"
     BLANK = " "
-    WALL = colored("█", "yellow")
-    STRICT = colored("░", "yellow")
-    SOLVE = colored("8", "cyan")
+    WALL = "█"
+    STRICT = "░"
+    SOLVE = "8"
 
 
 class MazeError(Exception):
@@ -29,12 +57,14 @@ class MazeError(Exception):
 
 class Maze:
     def __init__(self, width: int, height: int,
-                 entry: Tuple[int, int], exit: Tuple[int, int]) -> None:
+                 entry: Tuple[int, int], exit: Tuple[int, int],
+                 color: Dict[str, Color]) -> None:
         self.width: int = width
         self.height: int = height
         self.entry: tuple = (-1, -1)
         self.exit: tuple = (-1, -1)
         self.maze: dict = {}
+        self.color: dict = color
         for x in range(width):
             for y in range(height):
                 self.maze.update({(x, y): Cell.WALL})
@@ -93,13 +123,14 @@ class Maze:
 
     def show_maze(self) -> None:
         for x in range(self.width + 2):
-            print(Cell.STRICT.value, end="")
+            print(self.color["STRICT"].value + Cell.STRICT.value, end="")
         print()
         for y in range(self.height):
-            print(Cell.STRICT.value, end="")
+            print(self.color["STRICT"].value + Cell.STRICT.value, end="")
             for x in range(self.width):
+                print(f"{self.color[self.maze[(x, y)].name].value}", end="")
                 print(f"{self.maze[(x, y)].value}", end="")
-            print(Cell.STRICT.value)
+            print(self.color["STRICT"].value + Cell.STRICT.value)
         for x in range(self.width + 2):
-            print(Cell.STRICT.value, end="")
-        print()
+            print(self.color["STRICT"].value + Cell.STRICT.value, end="")
+        print(Color.RESET.value)
