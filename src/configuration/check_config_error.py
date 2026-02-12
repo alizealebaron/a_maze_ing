@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/12 14:46:16 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/12 15:26:37 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -53,6 +53,9 @@ def required_config_format(filename: str) -> None:
         lines = file.read().splitlines()
 
     for line in lines:
+        if line.startswith("#") or line == "":
+            continue
+
         result = re.search("^[A-Z_]+=.+$", line)
 
         if result is None:
@@ -75,6 +78,9 @@ def required_config_key(filename: str) -> dict:
         lines = file.read().splitlines()
 
     for line in lines:
+
+        if line.startswith("#") or line == "":
+            continue
 
         split_line = line.split("=")
         dict_config[split_line[0]] = split_line[1]
@@ -99,6 +105,10 @@ def required_config_key(filename: str) -> dict:
     dict_config["PERFECT"] = check_bool_key("PERFECT", dict_config["PERFECT"])
 
     check_file_key("OUTPUT_FILE", dict_config["OUTPUT_FILE"])
+
+    if (dict_config["EXIT"] == dict_config["ENTRY"]):
+        send_error(ConfigurationError(), "Entry and Exit is at the "
+                   "same place.")
 
     return (dict_config)
 
@@ -129,13 +139,13 @@ def check_coord_key(key: str, value: str, dict_data: dict) -> tuple:
     except Exception:
         send_error(ConfigurationError(), f"{key} must be int,int")
 
-    if x < 0 or x > dict_data["WIDTH"]:
+    if x < 0 or x > dict_data["WIDTH"] - 1:
         send_error(ConfigurationError(), f"[{key}] x ({x}) must be > 0 and "
-                   f"< {dict_data['WIDTH']}")
+                   f"< {dict_data['WIDTH'] - 1}")
 
-    if y < 0 or y > dict_data["HEIGHT"]:
+    if y < 0 or y > dict_data["HEIGHT"] - 1:
         send_error(ConfigurationError(), f"[{key}] y ({y}) must be > 0 and "
-                   f"< {dict_data['HEIGHT']}")
+                   f"< {dict_data['HEIGHT'] - 1}")
 
     return (x, y)
 
