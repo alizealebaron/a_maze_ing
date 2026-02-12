@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/12 13:40:47 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/12 14:46:16 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -89,9 +89,9 @@ def required_config_key(filename: str) -> dict:
                        f" {filename}.")
 
     dict_config["WIDTH"] = check_int_key("WIDTH",
-                                         dict_config["WIDTH"], 9, None)
+                                         dict_config["WIDTH"], 4, None)
     dict_config["HEIGHT"] = check_int_key("HEIGHT",
-                                          dict_config["HEIGHT"], 7, None)
+                                          dict_config["HEIGHT"], 4, None)
     dict_config["ENTRY"] = check_coord_key("ENTRY", dict_config["ENTRY"],
                                            dict_config)
     dict_config["EXIT"] = check_coord_key("EXIT", dict_config["EXIT"],
