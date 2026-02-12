@@ -24,6 +24,7 @@
 
 ## 💡 Inspirations & Sources
 
+- [weblog.jamisbuck.org/maze-generation-hunt-and-kill-algorithm](https://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm)
 - 
 
 **Contact :** alebaron@student.42lehavre.fr
