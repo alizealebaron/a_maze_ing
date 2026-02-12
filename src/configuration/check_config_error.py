@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/10 16:49:18 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/12 10:30:23 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -22,6 +22,12 @@ import re
 # +-------------------------------------------------------------------------+
 # |                                Function                                 |
 # +-------------------------------------------------------------------------+
+
+def check_all_config(filename: str) -> dict:
+    check_file(filename)
+    required_config_format(filename)
+    return required_config_key(filename)
+
 
 def check_file(filename: str) -> None:
 
