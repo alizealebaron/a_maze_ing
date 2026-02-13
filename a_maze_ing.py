@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 13:42:56 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/13 16:42:11 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -15,6 +15,7 @@
 # +-------------------------------------------------------------------------+
 
 import sys
+import os
 from src.maze.maze import Maze
 from src.output.output import put_maze_val
 from src.menu.menu import print_menu, manage_user_input
@@ -30,44 +31,46 @@ from src.maze.generation import side_winder, hunt_and_kill
 
 if __name__ == "__main__":
 
-    # Get arguments
-    argc = len(sys.argv)
-    argv = sys.argv
+    try:
+        # Get arguments
+        argc = len(sys.argv)
+        argv = sys.argv
 
-    if (argc != 2):
-        send_error(ConfigurationError(), "Wrong arguments. "
-                   "Need one file.")
+        if (argc != 2):
+            send_error(ConfigurationError(), "Wrong arguments. "
+                    "Need one file.")
 
-    color = init_color()
-    get_random_color(color)
+        color = init_color()
+        get_random_color(color)
 
-    color = init_color()
-    get_random_color(color)
-    # Configuration recovery
-    config = get_config(argv[1])
+        color = init_color()
+        get_random_color(color)
+        # Configuration recovery
+        config = get_config(argv[1])
 
-    # Generating maze
-    m = Maze(config["WIDTH"], config["HEIGHT"],
-             config["ENTRY"], config["EXIT"], color)
+        # Generating maze
+        maze = Maze(config["WIDTH"], config["HEIGHT"],
+                    config["ENTRY"], config["EXIT"], color)
 
-    hunt_and_kill(m, config)
+        hunt_and_kill(maze, config)
 
-    # Displaying the maze
-    # print(m.show_maze())
+        # Displaying the menu
+        while (True):
+            try:
+                print_menu()
+                user_input = input("Choice ? (1-5): ")
+                if (user_input.isdigit() is False):
+                    print_error(MenuError(), "Bad Input, must be an integer (1-5)")
+                else:
+                    manage_user_input(user_input, color, config)
+                    print()
+                    maze.show_maze()
 
-    # Displaying the menu
-    while (True):
-        try:
-            print_menu()
-            user_input = input("Choice ? (1-5): ")
-            if (user_input.isdigit() is False):
-                print_error(MenuError(), "Bad Input, must be an integer (1-5)")
-            else:
-                manage_user_input(user_input, color)
-                print()
-                m.show_maze()
+            except Exception as e:
+                print(e)
 
-        except Exception as e:
-            print(e)
+            put_maze_val(maze, config["OUTPUT_FILE"])
 
-        put_maze_val(m, config["OUTPUT_FILE"])
+    except KeyboardInterrupt:
+        _ = os.system("clear")
+        print("Program interrupt ! So long !")

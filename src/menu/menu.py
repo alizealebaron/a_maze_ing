@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 12:32:04 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/13 16:40:29 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -15,20 +15,20 @@
 # +-------------------------------------------------------------------------+
 
 
-from src.maze.maze import Color
+from src.maze.maze import Color, Maze
 from src.utils.effect import Effect
 from src.utils.theme import Theme
 from typing import Dict
 from random import choice
+from src.maze.generation import hunt_and_kill
 
 
 # +-------------------------------------------------------------------------+
 # |                            Input Functions                              |
 # +-------------------------------------------------------------------------+
 
-def regen_maze():
-    # TODO
-    print("You choose to regen the maze")
+def regen_maze(maze: Maze, config: dict):
+    hunt_and_kill(maze, config)
 
 
 def show_hide_path():
@@ -92,7 +92,9 @@ dict_menu_data = {
 # |                                Function                                 |
 # +-------------------------------------------------------------------------+
 
-def manage_user_input(user_input: int, color: Dict[str, Color]) -> None:
+def manage_user_input(user_input: int, color: Dict[str, Color], config: dict) -> None:
+    if int(user_input) == 1:
+        dict_menu_data[int(user_input)]["function"](config)
     if int(user_input) == 4:
         dict_menu_data[int(user_input)]["function"](color)
     else:
