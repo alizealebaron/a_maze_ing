@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/12 15:53:29 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/13 12:28:21 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -21,7 +21,6 @@ from src.menu.menu import print_menu, manage_user_input
 from src.utils.error import print_error, send_error, MenuError
 from src.configuration.check_config_error import get_config, ConfigurationError
 from src.maze.generation import new, hunt_and_kill
-
 
 # +-------------------------------------------------------------------------+
 # |                                  Main                                   |
