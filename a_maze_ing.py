@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 13:18:09 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/13 13:42:56 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     hunt_and_kill(m, config)
 
     # Displaying the maze
-    m.show_maze()
+    # print(m.show_maze())
 
     # Displaying the menu
     while (True):

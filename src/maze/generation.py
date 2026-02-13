@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 12:48:43 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/13 16:11:07 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -19,6 +19,8 @@ from .maze import Maze, Cell, MazeError
 from random import randint
 import random
 from rich.live import Live
+from rich.text import Text
+import time
 
 
 # +-------------------------------------------------------------------------+
@@ -60,76 +62,82 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
     width = config["WIDTH"]
     height = config["HEIGHT"]
-    exit = config["EXIT"]
 
-    def get_unvisited_neibourg(coord: tuple, visited: list) -> list:
-        lst_unvisited_neibourg = []
+    def get_neighbors(coord: tuple, visited: set, is_unvisited: bool) -> list:
 
         x, y = coord
+        # Possible direction
+        directions = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
+        valid_neighbors = []
 
-        neibourg_N = (x, y-1)
-        neibourg_S = (x, y+1)
-        neibourg_O = (x-1, y)
-        neibourg_E = (x+1, y)
+        for nx, ny in directions:
+            if 0 <= nx < width and 0 <= ny < height:
 
-        lst_neibourg = [neibourg_N, neibourg_S, neibourg_O, neibourg_E]
+                if is_unvisited:
+                    if (nx, ny) not in visited and maze.maze[(nx, ny)] != Cell.STRICT:
+                        valid_neighbors.append((nx, ny))
 
-        for people in lst_neibourg:
-            x, y = people
+                else:
+                    if (nx, ny) in visited:
+                        valid_neighbors.append((nx, ny))
 
-            try:
-                if (maze.maze[people] == Cell.STRICT):
-                    continue
+        return valid_neighbors
 
-                if (people not in visited and x >= 0 and y >= 0 and
-                x < config["WIDTH"] and y < config["WIDTH"]):
-                    lst_unvisited_neibourg.append(people)
-            except Exception:
-                pass
+    def try_change_cell(maze: Maze, cell: tuple[int, int], live: Live):
+        if (maze.is_editable(cell)):
+            maze.change_cell(cell, Cell.BLANK)
+            live.update(Text.from_ansi(maze.show_maze()))
+            time.sleep(0.05)
 
-        return lst_unvisited_neibourg
+    def break_wall_between(cell1: tuple, cell2: tuple, live: Live):
+        x1, y1 = cell1
+        x2, y2 = cell2
 
-    def kill(cell: tuple[int, int]):
+        # To break the wall, we need the cell between empty
+        wall_cell = ((x1 + x2) // 2, (y1 + y2) // 2)
 
-        visited_cell.append(cell)
-        un_neibourg = get_unvisited_neibourg(cell, visited_cell)
+        # And than we can change our path
+        try_change_cell(maze, wall_cell, live)
+        try_change_cell(maze, cell2, live)
 
-        while (len(un_neibourg) > 0):
+    def kill(current_cell: tuple[int, int], visited_cell: set, live: Live):
 
-            x, y = cell
+        visited_cell.add(current_cell)
 
-            # Randomize a direction
-            direction = randint(0, (len(un_neibourg) - 1))
-            direction = un_neibourg.pop(direction)
+        while True:
+            neighbors = get_neighbors(current_cell, visited_cell, True)
+            if not neighbors:
+                break
 
-            un_neibourg = get_unvisited_neibourg(direction, visited_cell)
+            # Choose a random destination
+            next_cell = random.choice(neighbors)
 
-            # Change the cell in path
+            # Open a path between several path
+            break_wall_between(current_cell, next_cell, live)
 
-            if (maze.is_editable(direction)):
-                maze.change_cell(direction, Cell.BLANK)
+            # Move on the next
+            visited_cell.add(next_cell)
+            current_cell = next_cell
 
-            # Make sure that there is wall
+    def hunt(visited_cell, live):
 
-            for neibourg in un_neibourg:
-                visited_cell.append(neibourg)
+        # Calculing parity of the algorithm
 
-            visited_cell.append(direction)
+        start_x, start_y = config["ENTRY"]
+        offset_x = start_x % 2
+        offset_y = start_y % 2
 
-    def hunt(visited_cell: list) -> tuple[int, int] | None:
-
-        for y in range(0, width):
-            for x in range(0, height):
+        for y in range(offset_y, height, 2):
+            for x in range(offset_x, width, 2):
                 cell = (x, y)
-                unvisited = get_unvisited_neibourg(cell, visited_cell)
 
-                if (len(unvisited) > 0):
-                    next_cell = unvisited[0]
+                if cell not in visited_cell and maze.maze[cell] != Cell.STRICT:
 
-                    if (maze.is_editable(cell)):
-                        maze.change_cell(cell, Cell.BLANK)
-
-                    return next_cell
+                    neighbors = get_neighbors(cell, visited_cell, False)
+                    if neighbors:
+                        v_neigh = random.choice(neighbors)
+                        break_wall_between(v_neigh, cell, live)
+                        return cell
         return None
 
     # Get the seed
@@ -140,15 +148,14 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
     # Initialization of visited cells
 
-    visited_cell = [exit]
-
-    # Begin of hunt
-
+    visited_cell = {config["ENTRY"]}
     cell = config["ENTRY"]
 
-    with Live("", refresh_per_second=1) as live:
+    with Live("", refresh_per_second=25) as live:
 
         while (cell is not None):
-            kill(cell)
-            cell = hunt(visited_cell)
-            live.update(maze.show_maze())
+            kill(cell, visited_cell, live)
+            cell = hunt(visited_cell, live)
+
+            maze_render = Text.from_ansi(maze.show_maze())
+            live.update(maze_render)

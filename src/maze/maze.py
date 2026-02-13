@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/13 13:18:41 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/13 14:49:18 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -148,19 +148,23 @@ class Maze:
         else:
             print(f"{MazeError().__class__.__name__}: Can't draw 42 pattern.")
 
-    def show_maze(self) -> None:
+    def show_maze(self) -> str:
+        str_maze = ""
+
         # Top border
         for x in range(self.width + 2):
-            print(f"{self.color['STRICT']}{Cell.STRICT.value}", end="")
-        print()
+            str_maze += (f"{self.color['STRICT']}{Cell.STRICT.value}")
+        str_maze += "\n"
         # Maze
         for y in range(self.height):
-            print(f"{self.color['STRICT']}{Cell.STRICT.value}", end="")
+            str_maze += (f"{self.color['STRICT']}{Cell.STRICT.value}")
             for x in range(self.width):
-                print(f"{self.color[self.maze[(x, y)].name]}", end="")
-                print(f"{self.maze[(x, y)].value}", end="")
-            print(f"{self.color['STRICT']}{Cell.STRICT.value}")
+                str_maze += f"{self.color[self.maze[(x, y)].name]}"
+                str_maze += f"{self.maze[(x, y)].value}"
+            str_maze += f"{self.color['STRICT']}{Cell.STRICT.value}\n"
         # Lower border
         for x in range(self.width + 2):
-            print(f"{self.color['STRICT']}{Cell.STRICT.value}", end="")
-        print(Color.RESET.value)
+            str_maze += f"{self.color['STRICT']}{Cell.STRICT.value}"
+        str_maze += Color.RESET.value
+
+        return str_maze
