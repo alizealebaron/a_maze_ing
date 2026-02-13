@@ -33,9 +33,9 @@ def side_winder(maze: Maze) -> None:
             except MazeError:
                 pass
 
-    for y in range(0, maze.height, 2):
+    for y in range(0, maze.height - 1, 2):
         xvalmax = randint(0, int(maze.width/3))
-        for x in range(1, maze.width, 2):
+        for x in range(1, maze.width - 1, 2):
             try:
                 if y == 0:
                     if x >= xvalmax:
