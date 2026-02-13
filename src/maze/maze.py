@@ -6,12 +6,22 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/13 12:30:39 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/13 13:18:41 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
+
+# +-------------------------------------------------------------------------+
+# |                               Importation                               |
+# +-------------------------------------------------------------------------+
+
+
 from enum import Enum
 from typing import Tuple, Dict
 
+
+# +-------------------------------------------------------------------------+
+# |                                   Enum                                  |
+# +-------------------------------------------------------------------------+
 
 class Color(Enum):
     RESET = "\033[0m"
@@ -42,6 +52,10 @@ class Color(Enum):
     def __str__(self):
         return self.value
 
+
+# +-------------------------------------------------------------------------+
+# |                                 Class                                   |
+# +-------------------------------------------------------------------------+
 
 class Cell(Enum):
     ENTRY = "E"
@@ -91,6 +105,15 @@ class Maze:
             raise MazeError("Invalid value, should be of Cell type")
         self.maze[cell] = val
 
+    def is_editable(self, cell: Tuple[int, int]) -> bool:
+        x, y = cell
+        if x > self.width or y > self.height:
+            return False
+        if cell in [self.entry, self.exit] or self.maze[cell] == Cell.STRICT:
+            return False
+
+        return True
+
     def is_ok_for_logo(self) -> bool:
         if self.width < 9 or self.height < 7:
             return False
@@ -121,6 +144,9 @@ class Maze:
             self.change_cell((midx + 1, midy + 2), Cell.STRICT)
             self.change_cell((midx + 2, midy + 2), Cell.STRICT)
             self.change_cell((midx + 3, midy + 2), Cell.STRICT)
+
+        else:
+            print(f"{MazeError().__class__.__name__}: Can't draw 42 pattern.")
 
     def show_maze(self) -> None:
         # Top border

@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/12 15:26:37 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/12 15:32:22 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -161,7 +161,7 @@ def check_bool_key(key: str, value: str) -> bool:
 
 def check_file_key(key: str, value: str) -> None:
 
-    regex = "^[A-Z_a-z]+\.txt$"
+    regex = r"^[A-Za-z_]+\.txt$"
     result = re.search(regex, value)
 
     if result is None:

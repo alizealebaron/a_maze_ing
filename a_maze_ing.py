@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 12:14:38 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/13 13:18:09 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -21,7 +21,7 @@ from src.menu.menu import print_menu, manage_user_input
 from src.menu.menu import get_random_color, init_color
 from src.utils.error import print_error, send_error, MenuError
 from src.configuration.check_config_error import get_config, ConfigurationError
-from src.maze.generation import side_winder
+from src.maze.generation import side_winder, hunt_and_kill
 
 
 # +-------------------------------------------------------------------------+
@@ -40,13 +40,17 @@ if __name__ == "__main__":
 
     color = init_color()
     get_random_color(color)
+
+    color = init_color()
+    get_random_color(color)
     # Configuration recovery
     config = get_config(argv[1])
 
     # Generating maze
     m = Maze(config["WIDTH"], config["HEIGHT"],
              config["ENTRY"], config["EXIT"], color)
-    side_winder(m)
+
+    hunt_and_kill(m, config)
 
     # Displaying the maze
     m.show_maze()
