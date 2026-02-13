@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/13 12:48:28 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/13 12:51:23 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -16,7 +16,41 @@
 
 
 from enum import Enum
-from typing import Tuple
+from typing import Tuple, Dict
+
+
+# +-------------------------------------------------------------------------+
+# |                                   Enum                                  |
+# +-------------------------------------------------------------------------+
+
+class Color(Enum):
+    RESET = "\033[0m"
+
+    BLACK = "\033[30m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    MAGENTA = "\033[35m"
+    CYAN = "\033[36m"
+    LIGHT_GRAY = "\033[37m"
+
+    DARK_GRAY = "\033[90m"
+    BRIGHT_RED = "\033[91m"
+    BRIGHT_GREEN = "\033[92m"
+    GOLD = "\033[93m"
+    SKY_BLUE = "\033[94m"
+    PINK = "\033[95m"
+    TURQUOISE = "\033[96m"
+    WHITE = "\033[97m"
+
+    ORANGE = "\033[38;5;208m"
+    CORAL = "\033[38;5;203m"
+    LIME = "\033[38;5;118m"
+    BROWN = "\033[38;5;130m"
+
+    def __str__(self):
+        return self.value
 
 
 # +-------------------------------------------------------------------------+
@@ -79,7 +113,6 @@ class Maze:
             return False
 
         return True
-
 
     def is_ok_for_logo(self) -> bool:
         if self.width < 9 or self.height < 7:
