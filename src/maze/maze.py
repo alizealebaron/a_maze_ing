@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/12 16:21:24 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/13 12:30:39 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 from enum import Enum
@@ -15,9 +15,6 @@ from typing import Tuple, Dict
 
 class Color(Enum):
     RESET = "\033[0m"
-    BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
-    REVERSE = "\033[7m"
 
     BLACK = "\033[30m"
     RED = "\033[31m"
@@ -40,14 +37,18 @@ class Color(Enum):
     ORANGE = "\033[38;5;208m"
     CORAL = "\033[38;5;203m"
     LIME = "\033[38;5;118m"
+    BROWN = "\033[38;5;130m"
+
+    def __str__(self):
+        return self.value
 
 
 class Cell(Enum):
     ENTRY = "E"
     EXIT = "X"
-    BLANK = " "
+    BLANK = "░"
     WALL = "█"
-    STRICT = "░"
+    STRICT = "▒"
     SOLVE = "8"
 
 
@@ -122,15 +123,18 @@ class Maze:
             self.change_cell((midx + 3, midy + 2), Cell.STRICT)
 
     def show_maze(self) -> None:
+        # Top border
         for x in range(self.width + 2):
-            print(self.color["STRICT"].value + Cell.STRICT.value, end="")
+            print(f"{self.color['STRICT']}{Cell.STRICT.value}", end="")
         print()
+        # Maze
         for y in range(self.height):
-            print(self.color["STRICT"].value + Cell.STRICT.value, end="")
+            print(f"{self.color['STRICT']}{Cell.STRICT.value}", end="")
             for x in range(self.width):
-                print(f"{self.color[self.maze[(x, y)].name].value}", end="")
+                print(f"{self.color[self.maze[(x, y)].name]}", end="")
                 print(f"{self.maze[(x, y)].value}", end="")
-            print(self.color["STRICT"].value + Cell.STRICT.value)
+            print(f"{self.color['STRICT']}{Cell.STRICT.value}")
+        # Lower border
         for x in range(self.width + 2):
-            print(self.color["STRICT"].value + Cell.STRICT.value, end="")
+            print(f"{self.color['STRICT']}{Cell.STRICT.value}", end="")
         print(Color.RESET.value)
