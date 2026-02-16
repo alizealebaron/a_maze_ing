@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 12:56:59 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 13:48:09 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -103,7 +103,7 @@ def manage_user_input(user_input: int, color: Dict[str, Color], maze: Maze, conf
         dict_menu_data[int(user_input)]["function"]()
 
 
-def print_menu() -> None:
+def print_menu(config: dict) -> None:
 
     def get_title() -> str:
         return (f"{Color.ORANGE}{Effect.BOLD}A_maze_ing menu{Color.RESET}")
@@ -114,6 +114,7 @@ def print_menu() -> None:
             print(f"║ {str_temp:70}║")
 
     print("")
+    print_seed(config)
     print("╔══════════════════════════════════════════════════════════════╗")
     print(f"║                       {get_title()}                        ║")
     print("╠══════════════════════════════════════════════════════════════╣")
@@ -122,6 +123,16 @@ def print_menu() -> None:
     print("║                                                              ║")
     print("╚══════════════════════════════════════════════════════════════╝")
     print("")
+
+
+def print_seed(config: dict) -> None:
+
+    try:
+        seed = config["SEED"]
+    except Exception:
+        seed = config["RANDOM_SEED"]
+
+    print(f"Seed : {seed}")
 
 
 def get_random_color(color: Dict[str, Color]) -> None:
