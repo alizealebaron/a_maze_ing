@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 16:11:07 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 12:21:21 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -71,14 +71,17 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         valid_neighbors = []
 
         for nx, ny in directions:
+
+            avg_x = ((nx + x) / 2)
+            avg_y = ((ny + y) / 2)
             if 0 <= nx < width and 0 <= ny < height:
 
                 if is_unvisited:
-                    if (nx, ny) not in visited and maze.maze[(nx, ny)] != Cell.STRICT:
+                    if (nx, ny) not in visited and maze.maze[(nx, ny)] != Cell.STRICT and maze.maze[(avg_x, avg_y)] != Cell.STRICT:
                         valid_neighbors.append((nx, ny))
 
                 else:
-                    if (nx, ny) in visited:
+                    if (nx, ny) in visited and maze.maze[(avg_x, avg_y)] != Cell.STRICT:
                         valid_neighbors.append((nx, ny))
 
         return valid_neighbors
@@ -144,7 +147,9 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
     try:
         random.seed(config["SEED"])
     except Exception:
-        pass
+        seed = random.randint(0, 314159265358979)
+        config["RANDOM_SEED"] = seed
+        random.seed(config["RANDOM_SEED"])
 
     # Initialization of visited cells
 
