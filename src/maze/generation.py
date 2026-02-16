@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 14:50:46 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 16:00:16 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -103,6 +103,35 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         try_change_cell(maze, wall_cell, live)
         try_change_cell(maze, cell2, live)
 
+    def exit_connected(maze: Maze, config: dict, visited_cell: set, live: Live) -> None:
+        exit_node = config["EXIT"]
+        x, y = exit_node
+        directions = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
+
+        if exit_node not in visited_cell:
+            neighbors = []
+
+            for nx, ny in directions:
+                avg_x = ((nx + x) // 2)
+                avg_y = ((ny + y) // 2)
+
+                try:
+                    if (maze.maze[(avg_x, avg_y)]) == Cell.WALL:
+                        break
+                    if maze.maze[(avg_x, avg_y)] != Cell.STRICT:
+                        neighbors.append((nx, ny))
+                except Exception:
+                    pass
+            
+            if not neighbors:
+                directions = [(x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)]
+                # TODO : Check les diagonales 
+
+            if neighbors:
+                v_neigh = random.choice(neighbors)
+                break_wall_between(v_neigh, exit_node, live)
+                visited_cell.add(exit_node)
+
     def kill(current_cell: tuple[int, int], visited_cell: set, live: Live):
 
         visited_cell.add(current_cell)
@@ -153,7 +182,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
     # Initialization of visited cells
 
-    visited_cell = {config["ENTRY"]}
+    visited_cell = set()
     cell = config["ENTRY"]
 
     with Live("", refresh_per_second=25) as live:
@@ -164,3 +193,6 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
             maze_render = Text.from_ansi(maze.show_maze())
             live.update(maze_render)
+
+        exit_connected(maze, config, visited_cell, live)
+        live.update(Text.from_ansi(maze.show_maze()))
