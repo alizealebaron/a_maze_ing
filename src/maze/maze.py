@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/16 10:46:31 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 12:50:45 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -147,6 +147,13 @@ class Maze:
 
         else:
             print(f"{MazeError().__class__.__name__}: Can't draw 42 pattern.")
+
+    def clean_maze(self) -> None:
+
+        for x in range(0, self.width):
+            for y in range(0, self.height):
+                if (self.is_editable((x, y))):
+                    self.change_cell((x, y), Cell.WALL)
 
     def show_maze(self) -> str:
         str_maze = ""

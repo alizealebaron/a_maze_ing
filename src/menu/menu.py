@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 12:33:35 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/16 14:09:48 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -28,6 +28,8 @@ from src.maze.generation import hunt_and_kill
 # +-------------------------------------------------------------------------+
 
 def regen_maze(maze: Maze, config: dict):
+
+    maze.clean_maze()
     hunt_and_kill(maze, config)
 
 
@@ -138,16 +140,16 @@ dict_theme_data = {
 # |                                Function                                 |
 # +-------------------------------------------------------------------------+
 
-def manage_user_input(user_input: int, color: Dict[str, Color], config: dict) -> None:
+def manage_user_input(user_input: int, color: Dict[str, Color], maze: Maze, config: dict) -> None:
     if int(user_input) == 1:
-        dict_menu_data[int(user_input)]["function"](config)
-    if int(user_input) == 4:
+        dict_menu_data[int(user_input)]["function"](maze, config)
+    elif int(user_input) == 4:
         dict_menu_data[int(user_input)]["function"](color)
     else:
         dict_menu_data[int(user_input)]["function"]()
 
 
-def print_menu() -> None:
+def print_menu(config: dict) -> None:
 
     def get_title() -> str:
         return (f"{Color.ORANGE}{Effect.BOLD}A_maze_ing menu{Color.RESET}")
@@ -158,6 +160,7 @@ def print_menu() -> None:
             print(f"║ {str_temp:70}║")
 
     print("")
+    print_seed(config)
     print("╔══════════════════════════════════════════════════════════════╗")
     print(f"║                       {get_title()}                        ║")
     print("╠══════════════════════════════════════════════════════════════╣")
@@ -166,6 +169,16 @@ def print_menu() -> None:
     print("║                                                              ║")
     print("╚══════════════════════════════════════════════════════════════╝")
     print("")
+
+
+def print_seed(config: dict) -> None:
+
+    try:
+        seed = config["SEED"]
+    except Exception:
+        seed = config["RANDOM_SEED"]
+
+    print(f"Seed : {seed}")
 
 
 def get_random_color(color: Dict[str, Color]) -> None:

@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 16:42:11 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 13:36:55 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -57,12 +57,12 @@ if __name__ == "__main__":
         # Displaying the menu
         while (True):
             try:
-                print_menu()
+                print_menu(config)
                 user_input = input("Choice ? (1-5): ")
                 if (user_input.isdigit() is False):
                     print_error(MenuError(), "Bad Input, must be an integer (1-5)")
                 else:
-                    manage_user_input(user_input, color, config)
+                    manage_user_input(user_input, color, maze, config)
                     print()
                     maze.show_maze()
 
