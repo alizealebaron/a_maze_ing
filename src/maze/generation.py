@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 13:34:52 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 14:50:46 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -72,8 +72,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
         for nx, ny in directions:
 
-            avg_x = ((nx + x) / 2)
-            avg_y = ((ny + y) / 2)
+            avg_x = ((nx + x) // 2)
+            avg_y = ((ny + y) // 2)
             if 0 <= nx < width and 0 <= ny < height:
 
                 if is_unvisited:
