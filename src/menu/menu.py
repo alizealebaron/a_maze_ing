@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 16:40:29 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 12:56:59 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -28,6 +28,8 @@ from src.maze.generation import hunt_and_kill
 # +-------------------------------------------------------------------------+
 
 def regen_maze(maze: Maze, config: dict):
+
+    maze.clean_maze()
     hunt_and_kill(maze, config)
 
 
@@ -92,10 +94,10 @@ dict_menu_data = {
 # |                                Function                                 |
 # +-------------------------------------------------------------------------+
 
-def manage_user_input(user_input: int, color: Dict[str, Color], config: dict) -> None:
+def manage_user_input(user_input: int, color: Dict[str, Color], maze: Maze, config: dict) -> None:
     if int(user_input) == 1:
-        dict_menu_data[int(user_input)]["function"](config)
-    if int(user_input) == 4:
+        dict_menu_data[int(user_input)]["function"](maze, config)
+    elif int(user_input) == 4:
         dict_menu_data[int(user_input)]["function"](color)
     else:
         dict_menu_data[int(user_input)]["function"]()
