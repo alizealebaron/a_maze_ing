@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 12:32:04 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/13 14:03:15 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -42,12 +42,30 @@ def show_hide_graphic():
 
 
 def rotate_maze_color(color: Dict[str, Color]) -> None:
+
+    def get_title() -> str:
+        return f"{Color.ORANGE}Theme Selector{Color.RESET}"
+
+    def print_option() -> None:
+        for key, value in dict_theme_data.items():
+            str_temp = f"{value['color']}{key}. {value['name']}{Color.RESET}"
+            print(f"║ {str_temp:70}║")
+
     print("You choose to rotate maze color")
+    print("")
+    print("╔══════════════════════════════════════════════════════════════╗")
+    print(f"║                       {get_title()}                         ║")
+    print("╠══════════════════════════════════════════════════════════════╣")
+    print("║                                                              ║")
+    print_option()
+    print("║                                                              ║")
+    print("╚══════════════════════════════════════════════════════════════╝")
+    print("")
     user_choice = input("Pick the theme that you want: ")
     if int(user_choice) == 1:
         get_random_color(color)
-    if int(user_choice) == 2:
-        set_theme(color, Theme.BULBASAUR)
+    else:
+        set_theme(color, dict_theme_data[int(user_choice)]["theme"])
 
 
 def end_program():
@@ -87,6 +105,34 @@ dict_menu_data = {
     }
 }
 
+dict_theme_data = {
+    1: {
+        "name": "Random theme generator",
+        "color": Color.SKY_BLUE,
+        "theme": None
+    },
+    2: {
+        "name": "Bulbasaur",
+        "color": Color.TURQUOISE,
+        "theme": Theme.BULBASAUR
+    },
+    3: {
+        "name": "Retro",
+        "color": Color.GREEN,
+        "theme": Theme.RETRO
+    },
+    4: {
+        "name": "Pac-MAN",
+        "color": Color.GOLD,
+        "theme": Theme.PACMAN
+    },
+    5: {
+        "name": "Motherboard",
+        "color": Color.LIGHT_GRAY,
+        "theme": Theme.MOTHERBOARD
+    }
+}
+
 
 # +-------------------------------------------------------------------------+
 # |                                Function                                 |
@@ -104,7 +150,7 @@ def print_menu() -> None:
     def get_title() -> str:
         return (f"{Color.ORANGE}{Effect.BOLD}A_maze_ing menu{Color.RESET}")
 
-    def print_option() -> str:
+    def print_option() -> None:
         for key, value in dict_menu_data.items():
             str_temp = f"{value['color']}{key}. {value['name']}{Color.RESET}"
             print(f"║ {str_temp:70}║")

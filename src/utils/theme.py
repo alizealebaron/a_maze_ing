@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/13 11:39:36 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/13 12:34:44 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/13 13:48:39 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -28,7 +28,25 @@ class Theme(Enum):
                  "WALL": Color.GREEN,
                  "BLANK": Color.PINK,
                  "ENTRY": Color.CORAL,
-                 "EXIT": Color.GOLD}
+                 "EXIT": Color.LIME}
+
+    RETRO = {"STRICT": Color.GREEN,
+             "WALL": Color.ORANGE,
+             "BLANK": Color.SKY_BLUE,
+             "ENTRY": Color.RED,
+             "EXIT": Color.WHITE}
+
+    PACMAN = {"STRICT": Color.BLUE,
+              "WALL": Color.SKY_BLUE,
+              "BLANK": Color.BLACK,
+              "ENTRY": Color.GOLD,
+              "EXIT": Color.WHITE}
+
+    MOTHERBOARD = {"STRICT": Color.WHITE,
+                   "WALL": Color.BLACK,
+                   "BLANK": Color.LIME,
+                   "ENTRY": Color.GOLD,
+                   "EXIT": Color.RED}
 
     def __str__(self):
         return self.value
