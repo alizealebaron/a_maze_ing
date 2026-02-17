@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 12:33:35 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/16 14:16:57 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -19,7 +19,7 @@ from src.maze.maze import Color, Maze
 from src.utils.effect import Effect
 from src.utils.theme import Theme
 from typing import Dict
-from random import choice
+from random import choice, seed
 from src.maze.generation import hunt_and_kill
 
 
@@ -138,7 +138,8 @@ dict_theme_data = {
 # |                                Function                                 |
 # +-------------------------------------------------------------------------+
 
-def manage_user_input(user_input: int, color: Dict[str, Color], config: dict) -> None:
+def manage_user_input(user_input: int, color: Dict[str, Color],
+                      config: dict) -> None:
     if int(user_input) == 1:
         dict_menu_data[int(user_input)]["function"](config)
     if int(user_input) == 4:
@@ -169,12 +170,14 @@ def print_menu() -> None:
 
 
 def get_random_color(color: Dict[str, Color]) -> None:
+    seed()
     color_list = list(Color)
     color["STRICT"] = choice(color_list)
     color["WALL"] = choice(color_list)
     color["ENTRY"] = choice(color_list)
     color["EXIT"] = choice(color_list)
     color["BLANK"] = choice(color_list)
+    color["SOLVE"] = choice(color_list)
 
 
 def init_color() -> Dict[str, Color]:
@@ -182,7 +185,8 @@ def init_color() -> Dict[str, Color]:
              "WALL": Color.WHITE,
              "ENTRY": Color.LIME,
              "EXIT": Color.RED,
-             "BLANK": Color.BLACK}
+             "BLANK": Color.BLACK,
+             "SOLVE": Color.GOLD}
     return color
 
 
@@ -192,3 +196,4 @@ def set_theme(color: Dict[str, Color], theme: Theme):
     color["ENTRY"] = theme.value["ENTRY"]
     color["EXIT"] = theme.value["EXIT"]
     color["BLANK"] = theme.value["BLANK"]
+    color["SOLVE"] = theme.value["SOLVE"]

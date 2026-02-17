@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 12:21:21 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/16 15:37:48 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -90,7 +90,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         if (maze.is_editable(cell)):
             maze.change_cell(cell, Cell.BLANK)
             live.update(Text.from_ansi(maze.show_maze()))
-            time.sleep(0.05)
+            time.sleep(0)
 
     def break_wall_between(cell1: tuple, cell2: tuple, live: Live):
         x1, y1 = cell1
