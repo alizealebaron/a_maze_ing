@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:24 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/17 10:51:33 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/19 11:41:26 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 from src.maze.maze import Maze, Cell
@@ -15,15 +15,15 @@ from typing import Tuple
 
 def put_maze_val(maze: Maze, filename: str, path: str) -> None:
     with open(filename, "w") as file:
-        for y in range(maze.height - 1):
-            for x in range(maze.width - 1):
+        for y in range(1, maze.height - 1, 2):
+            for x in range(1, maze.width - 1, 2):
                 file.write(get_hex_val(maze, (x, y)))
             file.write("\n")
         file.write("\n")
         xentry, yentry = maze.entry
-        file.write(f"{xentry}, {yentry}\n")
+        file.write(f"{xentry},{yentry}\n")
         xexit, yexit = maze.exit
-        file.write(f"{xexit}, {yexit}\n")
+        file.write(f"{xexit},{yexit}\n")
         file.write(f"{path}\n")
 
 

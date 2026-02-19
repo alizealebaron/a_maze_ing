@@ -6,24 +6,87 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 12:39:18 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/17 11:03:48 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/19 12:00:39 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 from .maze import Maze, Cell
 from rich.live import Live
 from rich.text import Text
+from time import sleep
 
 
-def resolution(maze: Maze, config: dict) -> None:
+class StopPathFinder(Exception):
+    pass
+
+
+def resolution(maze: Maze, config: dict) -> str:
+    """Search the shortest path, draw it and return it"""
 
     width = config["WIDTH"]
     height = config["HEIGHT"]
     path = ""
 
-    def solve(pos: tuple) -> bool:
+    def explore_cell(cell: tuple[int, int], live: Live):
+        maze.change_cell(cell, Cell.SOLVE)
+        live.update(Text.from_ansi(maze.show_maze()))
+        sleep(0.05)
+
+    def get_directions(pos: tuple) -> list[tuple]:
+        """Give the directions in most efficient order"""
         x, y = pos
-        directions = [(x, y-1), (x, y+1), (x-1, y), (x+1, y)]
+        endx, endy = config["EXIT"]
+        diffx = endx - x
+        diffy = endy - y
+        directions = []
+        if abs(diffx) >= abs(diffy):
+            if diffx > 0:
+                directions.append((x+1, y))
+                if diffy > 0:
+                    directions.append((x, y+1))
+                    directions.append((x, y-1))
+                    directions.append((x-1, y))
+                else:
+                    directions.append((x, y-1))
+                    directions.append((x, y+1))
+                    directions.append((x-1, y))
+            else:
+                directions.append((x-1, y))
+                if diffy > 0:
+                    directions.append((x, y+1))
+                    directions.append((x, y-1))
+                    directions.append((x+1, y))
+                else:
+                    directions.append((x, y-1))
+                    directions.append((x, y+1))
+                    directions.append((x+1, y))
+        else:
+            if diffy > 0:
+                directions.append((x, y+1))
+                if diffx > 0:
+                    directions.append((x+1, y))
+                    directions.append((x-1, y))
+                    directions.append((x, y-1))
+                else:
+                    directions.append((x-1, y))
+                    directions.append((x+1, y))
+                    directions.append((x, y-1))
+            else:
+                directions.append((x, y-1))
+                if diffx >= 0:
+                    directions.append((x+1, y))
+                    directions.append((x-1, y))
+                    directions.append((x, y+1))
+                else:
+                    directions.append((x-1, y))
+                    directions.append((x+1, y))
+                    directions.append((x, y+1))
+        return directions
+
+    def solve(pos: tuple, live: Live) -> bool:
+        """Look recursively for the shortest path"""
+        x, y = pos
+        directions = get_directions(pos)
         nonlocal path
 
         for nx, ny in directions:
@@ -33,36 +96,38 @@ def resolution(maze: Maze, config: dict) -> None:
                 pass
             else:
                 if maze.maze[newpos] == Cell.EXIT:
-                    if newpos == directions[0]:
+                    if newpos == (x, y-1):
                         path += "N"
-                    if newpos == directions[1]:
+                    if newpos == (x, y+1):
                         path += "S"
-                    if newpos == directions[2]:
+                    if newpos == (x-1, y):
                         path += "W"
-                    if newpos == directions[3]:
+                    if newpos == (x+1, y):
                         path += "E"
                     return True
                 elif maze.maze[newpos] == Cell.BLANK:
-                    maze.change_cell(newpos, Cell.SOLVE)
-                    res = solve(newpos)
+                    explore_cell(newpos, live)
+                    res = solve(newpos, live)
                     if res:
-                        if newpos == directions[0]:
+                        if newpos == (x, y-1):
                             path += "N"
-                        if newpos == directions[1]:
+                        if newpos == (x, y+1):
                             path += "S"
-                        if newpos == directions[2]:
+                        if newpos == (x-1, y):
                             path += "W"
-                        if newpos == directions[3]:
+                        if newpos == (x+1, y):
                             path += "E"
                         return True
                     else:
                         maze.change_cell(newpos, Cell.BLANK)
         return False
 
+    # Start to solve, stop when finding the exit
+
     with Live("", refresh_per_second=25) as live:
 
-        solve(config["ENTRY"])
-        for cell in maze.maze.keys():
-            maze_render = Text.from_ansi(maze.show_maze())
-            live.update(maze_render)
+        solve(config["ENTRY"], live)
+
+        maze_render = Text.from_ansi(maze.show_maze())
+        live.update(maze_render)
     return path[::-1]
