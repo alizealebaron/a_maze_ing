@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 16:00:16 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/19 11:56:09 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -116,16 +116,28 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
                 avg_y = ((ny + y) // 2)
 
                 try:
-                    if (maze.maze[(avg_x, avg_y)]) == Cell.WALL:
-                        break
                     if maze.maze[(avg_x, avg_y)] != Cell.STRICT:
                         neighbors.append((nx, ny))
                 except Exception:
                     pass
-            
+
             if not neighbors:
-                directions = [(x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)]
-                # TODO : Check les diagonales 
+                directions = {
+                    (x+1, y+1): [(x+1, y), (x, y+1)],
+                    (x+1, y-1): [(x+1, y), (x, y-1)],
+                    (x-1, y+1): [(x-1, y), (x, y+1)],
+                    (x-1, y-1): [(x-1, y), (x, y-1)],
+                }
+
+                for direction in directions.items():
+                    try:
+                        if (maze.maze[direction]) != Cell.STRICT and (maze.maze[direction]) != Cell.WALL:
+                            random_dir = random.choice(directions[direction])
+                            maze.change_cell(random_dir, Cell.BLANK)
+                    except Exception:
+                        pass
+
+                # TODO : Check les diagonales
 
             if neighbors:
                 v_neigh = random.choice(neighbors)
