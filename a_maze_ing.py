@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/17 10:56:12 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/19 12:22:26 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -22,7 +22,7 @@ from src.menu.menu import print_menu, manage_user_input
 from src.menu.menu import get_random_color, init_color
 from src.utils.error import print_error, send_error, MenuError
 from src.configuration.check_config_error import get_config, ConfigurationError
-from src.maze.generation import side_winder, hunt_and_kill
+from src.maze.generation import hunt_and_kill
 from src.maze.resolution import resolution
 
 
@@ -67,7 +67,8 @@ if __name__ == "__main__":
                 print_menu()
                 user_input = input("Choice ? (1-5): ")
                 if (user_input.isdigit() is False):
-                    print_error(MenuError(), "Bad Input, must be an integer (1-5)")
+                    print_error(MenuError(), "Bad Input, "
+                                + "must be an integer (1-5)")
                 else:
                     manage_user_input(user_input, color, config)
                     print()
