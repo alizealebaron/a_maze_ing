@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/19 11:56:09 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/19 12:26:56 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -77,11 +77,14 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             if 0 <= nx < width and 0 <= ny < height:
 
                 if is_unvisited:
-                    if (nx, ny) not in visited and maze.maze[(nx, ny)] != Cell.STRICT and maze.maze[(avg_x, avg_y)] != Cell.STRICT:
+                    if (nx, ny) not in visited and\
+                     maze.maze[(nx, ny)] != Cell.STRICT and\
+                     maze.maze[(avg_x, avg_y)] != Cell.STRICT:
                         valid_neighbors.append((nx, ny))
 
                 else:
-                    if (nx, ny) in visited and maze.maze[(avg_x, avg_y)] != Cell.STRICT:
+                    if (nx, ny) in visited and\
+                     maze.maze[(avg_x, avg_y)] != Cell.STRICT:
                         valid_neighbors.append((nx, ny))
 
         return valid_neighbors
@@ -90,7 +93,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         if (maze.is_editable(cell)):
             maze.change_cell(cell, Cell.BLANK)
             live.update(Text.from_ansi(maze.show_maze()))
-            time.sleep(0.05)
+            time.sleep(0.02)
 
     def break_wall_between(cell1: tuple, cell2: tuple, live: Live):
         x1, y1 = cell1
@@ -103,7 +106,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         try_change_cell(maze, wall_cell, live)
         try_change_cell(maze, cell2, live)
 
-    def exit_connected(maze: Maze, config: dict, visited_cell: set, live: Live) -> None:
+    def exit_connected(maze: Maze, config: dict,
+                       visited_cell: set, live: Live) -> None:
         exit_node = config["EXIT"]
         x, y = exit_node
         directions = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
@@ -131,7 +135,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
                 for direction in directions.items():
                     try:
-                        if (maze.maze[direction]) != Cell.STRICT and (maze.maze[direction]) != Cell.WALL:
+                        if (maze.maze[direction]) != Cell.STRICT and\
+                         (maze.maze[direction]) != Cell.WALL:
                             random_dir = random.choice(directions[direction])
                             maze.change_cell(random_dir, Cell.BLANK)
                     except Exception:

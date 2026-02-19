@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/16 12:50:45 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/19 12:24:50 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -114,11 +114,15 @@ class Maze:
 
         return True
 
+    # Check if the size can handle the 42 logo
+
     def is_ok_for_logo(self) -> bool:
         if self.width < 9 or self.height < 7:
             return False
         else:
             return True
+
+    # Print the logo in the middle of the maze
 
     def put_logo(self) -> None:
         if self.is_ok_for_logo():

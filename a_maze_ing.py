@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/16 13:36:55 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/19 12:24:23 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -22,7 +22,8 @@ from src.menu.menu import print_menu, manage_user_input
 from src.menu.menu import get_random_color, init_color
 from src.utils.error import print_error, send_error, MenuError
 from src.configuration.check_config_error import get_config, ConfigurationError
-from src.maze.generation import side_winder, hunt_and_kill
+from src.maze.generation import hunt_and_kill
+from src.maze.resolution import resolution
 
 
 # +-------------------------------------------------------------------------+
@@ -38,7 +39,7 @@ if __name__ == "__main__":
 
         if (argc != 2):
             send_error(ConfigurationError(), "Wrong arguments. "
-                    "Need one file.")
+                       "Need one file.")
 
         color = init_color()
         get_random_color(color)
@@ -54,22 +55,27 @@ if __name__ == "__main__":
 
         hunt_and_kill(maze, config)
 
+        # Searching for solution
+        path = resolution(maze, config)
+
+        # Generating output
+        put_maze_val(maze, config["OUTPUT_FILE"], path)
+
         # Displaying the menu
         while (True):
             try:
                 print_menu(config)
                 user_input = input("Choice ? (1-5): ")
                 if (user_input.isdigit() is False):
-                    print_error(MenuError(), "Bad Input, must be an integer (1-5)")
+                    print_error(MenuError(), "Bad Input, "
+                                + "must be an integer (1-5)")
                 else:
                     manage_user_input(user_input, color, maze, config)
                     print()
-                    maze.show_maze()
+                    print(maze.show_maze())
 
             except Exception as e:
                 print(e)
-
-            put_maze_val(maze, config["OUTPUT_FILE"])
 
     except KeyboardInterrupt:
         _ = os.system("clear")
