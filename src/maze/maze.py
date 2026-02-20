@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/16 12:50:45 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 11:50:20 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -17,6 +17,7 @@
 
 from enum import Enum
 from typing import Tuple, Dict
+import sys
 
 
 # +-------------------------------------------------------------------------+
@@ -89,11 +90,13 @@ class Maze:
             self.entry = entry
         except MazeError:
             print("Error: can't place entry")
+            sys.exit(2)
         try:
             self.change_cell(exit, Cell.EXIT)
             self.exit = exit
         except MazeError:
             print("Error: can't place exit")
+            sys.exit(2)
 
     def change_cell(self, cell: Tuple[int, int], val: Cell) -> None:
         x, y = cell
