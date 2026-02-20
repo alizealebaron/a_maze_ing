@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/20 12:29:23 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 14:44:01 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -54,10 +54,6 @@ class Color(Enum):
         return self.value
 
 
-# +-------------------------------------------------------------------------+
-# |                                 Class                                   |
-# +-------------------------------------------------------------------------+
-
 class Cell(Enum):
     ENTRY = "E"
     EXIT = "X"
@@ -66,6 +62,10 @@ class Cell(Enum):
     STRICT = "▒"
     SOLVE = "•"
 
+
+# +-------------------------------------------------------------------------+
+# |                                 Class                                   |
+# +-------------------------------------------------------------------------+
 
 class MazeError(Exception):
     pass
@@ -81,6 +81,7 @@ class Maze:
         self.exit: tuple = (-1, -1)
         self.maze: dict = {}
         self.color: dict = color
+
         for x in range(width):
             for y in range(height):
                 self.maze.update({(x, y): Cell.WALL})
@@ -97,6 +98,23 @@ class Maze:
         except MazeError:
             print("Error: can't place exit")
             sys.exit(2)
+
+        self.THEMES = {
+            "default": {
+                "ENTRY": "E", "EXIT": "X", "BLANK": " ",
+                "WALL": "█", "STRICT": "▒", "SOLVE": "•"
+            },
+            1: {
+                "ENTRY": "🟦", "EXIT": "🟥", "BLANK": "  ",
+                "WALL": "⬛", "STRICT": "🟨", "SOLVE": "🟩"
+            },
+            2: {
+                "ENTRY": "🚪", "EXIT": "🏁", "BLANK": "⬜",
+                "WALL": "🧱", "STRICT": "🚫", "SOLVE": "⭐"
+            }
+        }
+
+        self.key = self.THEMES["default"]
 
     def change_cell(self, cell: Tuple[int, int], val: Cell) -> None:
         x, y = cell
@@ -173,19 +191,27 @@ class Maze:
 
         # Top border
         for x in range(self.width + 2):
-            str_maze += (f"{self.color['STRICT']}{Cell.STRICT.value}")
+            str_maze += (f"{self.color['STRICT']}{self.key['STRICT']}")
         str_maze += "\n"
         # Maze
         for y in range(self.height):
-            str_maze += (f"{self.color['STRICT']}{Cell.STRICT.value}")
+            str_maze += (f"{self.color['STRICT']}{self.key['STRICT']}")
             for x in range(self.width):
                 str_maze += f"{self.color[self.maze[(x, y)].name]}"
                 str_maze += f"{self.maze[(x, y)].value}"
                 str_maze += Color.RESET.value
-            str_maze += f"{self.color['STRICT']}{Cell.STRICT.value}\n"
+            str_maze += f"{self.color['STRICT']}{self.key['STRICT']}\n"
         # Lower border
         for x in range(self.width + 2):
-            str_maze += f"{self.color['STRICT']}{Cell.STRICT.value}"
+            str_maze += f"{self.color['STRICT']}{self.key['STRICT']}"
         str_maze += Color.RESET.value
 
         return str_maze
+
+    def change_keys(self, key: int | str) -> None:
+
+        try:
+            self.key = self.THEMES[key]
+        except KeyError:
+            print(f"{MazeError().__class__.__name__}: "
+                  "Wrong key in change_keys()")
