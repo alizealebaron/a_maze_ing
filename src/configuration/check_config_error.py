@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/12 15:32:22 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 11:32:30 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -95,9 +95,9 @@ def required_config_key(filename: str) -> dict:
                        f" {filename}.")
 
     dict_config["WIDTH"] = check_int_key("WIDTH",
-                                         dict_config["WIDTH"], 4, None)
+                                         dict_config["WIDTH"], 5, None)
     dict_config["HEIGHT"] = check_int_key("HEIGHT",
-                                          dict_config["HEIGHT"], 4, None)
+                                          dict_config["HEIGHT"], 5, None)
     dict_config["ENTRY"] = check_coord_key("ENTRY", dict_config["ENTRY"],
                                            dict_config)
     dict_config["EXIT"] = check_coord_key("EXIT", dict_config["EXIT"],
@@ -109,6 +109,14 @@ def required_config_key(filename: str) -> dict:
     if (dict_config["EXIT"] == dict_config["ENTRY"]):
         send_error(ConfigurationError(), "Entry and Exit is at the "
                    "same place.")
+
+    # Verification that the exit and entry are not adjacent
+    ex, ey = dict_config["ENTRY"]
+
+    entry_adj = [(ex+1, ey), (ex-1, ey), (ex-1, ey+1), (ex-1, ey-1), (ex+1, ey-1), (ex+1, ey+1), (ex, ey+1), (ex, ey-1)]
+
+    if dict_config["EXIT"] in entry_adj:
+        send_error(ConfigurationError(), "Entry and exit are adjacent.")
 
     return (dict_config)
 

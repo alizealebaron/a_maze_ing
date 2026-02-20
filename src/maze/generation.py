@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/19 12:26:56 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 12:24:26 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -15,42 +15,11 @@
 # +-------------------------------------------------------------------------+
 
 
-from .maze import Maze, Cell, MazeError
-from random import randint
+from .maze import Maze, Cell
 import random
 from rich.live import Live
 from rich.text import Text
 import time
-
-
-# +-------------------------------------------------------------------------+
-# |                              Side Winder                                |
-# +-------------------------------------------------------------------------+
-
-def side_winder(maze: Maze) -> None:
-    for y in range(0, maze.height, 2):
-        for x in range(0, maze.width, 2):
-            try:
-                maze.change_cell((x, y), Cell.BLANK)
-            except MazeError:
-                pass
-
-    for y in range(0, maze.height - 1, 2):
-        xvalmax = randint(0, int(maze.width/3))
-        for x in range(1, maze.width - 1, 2):
-            try:
-                if y == 0:
-                    if x >= xvalmax:
-                        maze.change_cell((x + 1, y + 1), Cell.BLANK)
-                        xvalmax = x + randint(1, int(maze.width/3))
-                    maze.change_cell((x, y), Cell.BLANK)
-                elif x >= xvalmax and y <= maze.height - 2:
-                    maze.change_cell((x + 1, y + 1), Cell.BLANK)
-                    xvalmax = x + randint(1, int(maze.width/3))
-                else:
-                    maze.change_cell((x, y), Cell.BLANK)
-            except MazeError:
-                pass
 
 
 # +-------------------------------------------------------------------------+
@@ -62,19 +31,64 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
     width = config["WIDTH"]
     height = config["HEIGHT"]
+    exit = config["EXIT"]
+    cell = config["ENTRY"]
+    perfect = config["PERFECT"]
+
+    ex, ey = exit
+    lock_coord = [(ex-1, ey-1), (ex+1, ey+1)]
+
+    def is_parity_ok() -> bool:
+
+        x, y = cell
+
+        par_x = x % 2 == 0
+        par_y = y % 2 == 0
+
+        par_ex = ex % 2 == 0
+        par_ey = ey % 2 == 0
+
+        if (par_ex != par_x and par_y != par_ey):
+            return False
+        elif (par_x is False and par_y is False and par_ey is True):
+            return False
+        elif (par_x is True and par_y is True and par_ey is False):
+            return False
+        else:
+            return True
+
+    parity = is_parity_ok() is False and perfect is True
 
     def get_neighbors(coord: tuple, visited: set, is_unvisited: bool) -> list:
 
         x, y = coord
+        ex, ey = exit
+
         # Possible direction
         directions = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
         valid_neighbors = []
+
+        # Lock some direction to avoid non perfect path
 
         for nx, ny in directions:
 
             avg_x = ((nx + x) // 2)
             avg_y = ((ny + y) // 2)
             if 0 <= nx < width and 0 <= ny < height:
+
+                if (parity):
+                    # Special case: The exit is in the lower right corner.
+                    if ((ex != width - 1) and (ey != height - 1)):
+
+                        if (nx, ny) in lock_coord:
+                            continue
+
+                        if (avg_x, avg_y) in lock_coord:
+                            continue
+
+                        if abs(nx - ex) <= 1 and abs(ny - ey) <= 1:
+                            if (nx, ny) != (ex, ey):
+                                continue
 
                 if is_unvisited:
                     if (nx, ny) not in visited and\
@@ -112,42 +126,40 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         x, y = exit_node
         directions = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
 
-        if exit_node not in visited_cell:
-            neighbors = []
+        neighbors = []
 
-            for nx, ny in directions:
-                avg_x = ((nx + x) // 2)
-                avg_y = ((ny + y) // 2)
+        for nx, ny in directions:
+            avg_x = ((nx + x) // 2)
+            avg_y = ((ny + y) // 2)
+            try:
+                if maze.maze[(nx, ny)] != Cell.BLANK:
+                    continue
+                if maze.maze[(avg_x, avg_y)] == Cell.BLANK:
+                    return
+                if maze.maze[(avg_x, avg_y)] != Cell.STRICT:
+                    neighbors.append((nx, ny))
+            except Exception:
+                pass
 
+        if not neighbors:
+            directions = {
+                (x+1, y+1): [(x+1, y), (x, y+1)],
+                (x+1, y-1): [(x+1, y), (x, y-1)],
+                (x-1, y+1): [(x-1, y), (x, y+1)],
+                (x-1, y-1): [(x-1, y), (x, y-1)],
+            }
+
+            for direction, _ in directions.items():
                 try:
-                    if maze.maze[(avg_x, avg_y)] != Cell.STRICT:
-                        neighbors.append((nx, ny))
+                    if (maze.maze[direction]) != Cell.STRICT and (maze.maze[direction]) != Cell.WALL:
+                        random_dir = random.choice(directions[direction])
+                        maze.change_cell(random_dir, Cell.BLANK)
                 except Exception:
                     pass
-
-            if not neighbors:
-                directions = {
-                    (x+1, y+1): [(x+1, y), (x, y+1)],
-                    (x+1, y-1): [(x+1, y), (x, y-1)],
-                    (x-1, y+1): [(x-1, y), (x, y+1)],
-                    (x-1, y-1): [(x-1, y), (x, y-1)],
-                }
-
-                for direction in directions.items():
-                    try:
-                        if (maze.maze[direction]) != Cell.STRICT and\
-                         (maze.maze[direction]) != Cell.WALL:
-                            random_dir = random.choice(directions[direction])
-                            maze.change_cell(random_dir, Cell.BLANK)
-                    except Exception:
-                        pass
-
-                # TODO : Check les diagonales
-
-            if neighbors:
-                v_neigh = random.choice(neighbors)
-                break_wall_between(v_neigh, exit_node, live)
-                visited_cell.add(exit_node)
+        else:
+            v_neigh = random.choice(neighbors)
+            break_wall_between(v_neigh, exit_node, live)
+            visited_cell.add(exit_node)
 
     def kill(current_cell: tuple[int, int], visited_cell: set, live: Live):
 
@@ -198,9 +210,17 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         random.seed(config["RANDOM_SEED"])
 
     # Initialization of visited cells
+    parity = is_parity_ok()
 
     visited_cell = set()
-    cell = config["ENTRY"]
+
+    if (parity):
+        visited_cell.add(exit)
+
+        # Special case: The exit is in the lower right corner.
+        if ((ex != width - 1) and (ey != height - 1)):
+            visited_cell.add(lock_coord[0])
+            visited_cell.add(lock_coord[1])
 
     with Live("", refresh_per_second=25) as live:
 
