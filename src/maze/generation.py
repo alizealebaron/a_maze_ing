@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 11:48:25 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 12:08:20 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -57,7 +57,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         else:
             return True
 
-    parity = is_parity_ok()
+    parity = is_parity_ok() is False and perfect is True
 
     def get_neighbors(coord: tuple, visited: set, is_unvisited: bool) -> list:
 
@@ -76,17 +76,19 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             avg_y = ((ny + y) // 2)
             if 0 <= nx < width and 0 <= ny < height:
 
-                if (parity is False and perfect is True):
+                if (parity):
+                    # Special case: The exit is in the lower right corner.
+                    if ((ex != width - 1) and (ey != height - 1)):
 
-                    if (nx, ny) in lock_coord:
-                        continue
-
-                    if (avg_x, avg_y) in lock_coord:
-                        continue
-
-                    if abs(nx - ex) <= 1 and abs(ny - ey) <= 1:
-                        if (nx, ny) != (ex, ey):
+                        if (nx, ny) in lock_coord:
                             continue
+
+                        if (avg_x, avg_y) in lock_coord:
+                            continue
+
+                        if abs(nx - ex) <= 1 and abs(ny - ey) <= 1:
+                            if (nx, ny) != (ex, ey):
+                                continue
 
                 if is_unvisited:
                     if (nx, ny) not in visited and maze.maze[(nx, ny)] != Cell.STRICT and maze.maze[(avg_x, avg_y)] != Cell.STRICT:
@@ -209,10 +211,13 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
     visited_cell = set()
 
-    if (parity is False and perfect is True):
+    if (parity):
         visited_cell.add(exit)
-        visited_cell.add(lock_coord[0])
-        visited_cell.add(lock_coord[1])
+
+        # Special case: The exit is in the lower right corner.
+        if ((ex != width - 1) and (ey != height - 1)):
+            visited_cell.add(lock_coord[0])
+            visited_cell.add(lock_coord[1])
 
     with Live("", refresh_per_second=25) as live:
 
