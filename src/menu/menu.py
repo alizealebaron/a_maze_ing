@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 12:24:50 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 14:29:59 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -22,71 +22,76 @@ from typing import Dict
 from random import choice, seed
 from src.maze.generation import hunt_and_kill
 from src.maze.resolution import resolution
-# from src.utils.error import MenuError, print_error
+from src.utils.error import MenuError, print_error
 
 
 # +-------------------------------------------------------------------------+
 # |                            Input Functions                              |
 # +-------------------------------------------------------------------------+
 
-def regen_maze(maze: Maze, config: dict):
+def regen_maze(maze: Maze, config: dict, color: dict):
 
     maze.clean_maze()
     hunt_and_kill(maze, config)
     resolution(maze, config)
+    return maze
 
 
 def show_hide_path(maze: Maze, config: dict):
-    print("You choose to show or hide the path")
+    print("\nYou choose to show or hide the path\n")
 
     def clean():
         maze.clean_path()
         print(maze.show_maze())
 
     def show():
-        resolution(maze, config)
+        path = resolution(maze, config)
+        print(f"The exit is {len(path)} steps away from the entry!")
 
     if config["HIDE"]:
-        clean()
         config["HIDE"] = not config["HIDE"]
-    else:
         show()
+    else:
+        clean()
         config["HIDE"] = not config["HIDE"]
 
 
 def change_maze_settings(config: dict):
 
-    # def manage_user_input(user_input: int, config: dict):
-    #     if user_input == 1:
-    #         val = input("Enter the new Width: ")
-    #         config["WIDTH"] = val
-    #         val = input("Enter the new Height: ")
-    #         config["HEIGHT"] = val
-    #     elif user_input == 2:
-    #         val = input("Enter the new Entry position: ")
-    #     elif user_input == 5:
-    #         return
+    def manage_user_input(user_input: int, config: dict):
+        if user_input == 1:
+            val = int(input("Enter the new Width: "))
+            config["WIDTH"] = val
+            val = int(input("Enter the new Height: "))
+            config["HEIGHT"] = val
+        elif user_input == 2:
+            val = input("Enter the new Entry position: ")
+        elif user_input == 3:
+            val = input("Enter the new Exit position: ")
+        elif user_input == 5:
+            return
 
-    # while (True):
-    #     try:
-    #         print_menu(config)
-    #         user_input = input("Pick what you want to change: ")
-    #         if (user_input.isdigit() is False):
-    #             print_error(MenuError(), "Bad Input, "
-    #                         + "must be an integer (1-5)")
-    #         else:
-    #             manage_user_input(user_input, config)
-    #             print()
+    while (True):
+        try:
+            print_menu(config)
+            user_input = input("Pick what you want to change: ")
+            if (user_input.isdigit() is False):
+                print_error(MenuError(), "Bad Input, "
+                            + "must be an integer (1-5)")
+            elif int(user_input) == 5:
+                break
+            else:
+                manage_user_input(int(user_input), config)
+                print()
 
-    #     except Exception as e:
-    #         print(e)
-    pass
+        except Exception as e:
+            print(e)
 
 
 def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
 
     def get_title() -> str:
-        return f"{Color.ORANGE}Theme Selector{Color.RESET}"
+        return f"{Effect.BOLD}{Color.ORANGE}Theme Selector{Color.RESET}"
 
     def print_option() -> None:
         for key, value in dict_theme_data.items():
@@ -170,9 +175,24 @@ dict_theme_data = {
         "theme": Theme.PACMAN
     },
     5: {
-        "name": "Motherboard",
+        "name": "Laker",
+        "color": Color.PINK,
+        "theme": Theme.LAKERS
+    },
+    6: {
+        "name": "Invisible",
         "color": Color.LIGHT_GRAY,
-        "theme": Theme.MOTHERBOARD
+        "theme": Theme.INVISIBLE
+    },
+    7: {
+        "name": "Evil",
+        "color": Color.RED,
+        "theme": Theme.EVIL
+    },
+    8: {
+        "name": "Black and White",
+        "color": Color.WHITE,
+        "theme": Theme.BLACKNWHITE
     }
 }
 
@@ -184,7 +204,7 @@ dict_theme_data = {
 def manage_user_input(user_input: int, color: Dict[str, Color],
                       maze: Maze, config: dict) -> None:
     if int(user_input) == 1:
-        dict_menu_data[int(user_input)]["function"](maze, config)
+        dict_menu_data[int(user_input)]["function"](maze, config, color)
     elif int(user_input) == 2:
         dict_menu_data[int(user_input)]["function"](maze, config)
     elif int(user_input) == 3:

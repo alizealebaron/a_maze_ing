@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 12:24:26 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 13:13:36 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -151,7 +151,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
             for direction, _ in directions.items():
                 try:
-                    if (maze.maze[direction]) != Cell.STRICT and (maze.maze[direction]) != Cell.WALL:
+                    if (maze.maze[direction]) != Cell.STRICT and\
+                       (maze.maze[direction]) != Cell.WALL:
                         random_dir = random.choice(directions[direction])
                         maze.change_cell(random_dir, Cell.BLANK)
                 except Exception:

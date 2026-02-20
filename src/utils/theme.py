@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/13 11:39:36 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/20 11:51:24 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 14:31:40 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -45,12 +45,33 @@ class Theme(Enum):
               "EXIT": Color.WHITE,
               "SOLVE": Color.WHITE}
 
-    MOTHERBOARD = {"STRICT": Color.GREEN,
-                   "WALL": Color.GOLD,
-                   "BLANK": Color.LIGHT_GRAY,
-                   "ENTRY": Color.GOLD,
-                   "EXIT": Color.RED,
-                   "SOLVE": Color.GOLD}
+    LAKERS = {"STRICT": Color.PINK,
+              "WALL": Color.YELLOW,
+              "BLANK": Color.GOLD,
+              "ENTRY": Color.WHITE,
+              "EXIT": Color.RED,
+              "SOLVE": Color.WHITE}
+
+    INVISIBLE = {"STRICT": Color.BLACK,
+                 "WALL": Color.BLACK,
+                 "BLANK": Color.BLACK,
+                 "ENTRY": Color.BLACK,
+                 "EXIT": Color.BLACK,
+                 "SOLVE": Color.WHITE}
+
+    EVIL = {"STRICT": Color.RED,
+            "WALL": Color.RED,
+            "BLANK": Color.BLACK,
+            "ENTRY": Color.RED,
+            "EXIT": Color.RED,
+            "SOLVE": Color.RED}
+
+    BLACKNWHITE = {"STRICT": Color.WHITE,
+                   "WALL": Color.WHITE,
+                   "BLANK": Color.BLACK,
+                   "ENTRY": Color.WHITE,
+                   "EXIT": Color.WHITE,
+                   "SOLVE": Color.WHITE}
 
     def __str__(self):
         return self.value

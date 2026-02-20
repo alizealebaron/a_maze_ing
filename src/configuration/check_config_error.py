@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 12:29:14 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 12:39:01 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -113,7 +113,8 @@ def required_config_key(filename: str) -> dict:
     # Verification that the exit and entry are not adjacent
     ex, ey = dict_config["ENTRY"]
 
-    entry_adj = [(ex+1, ey), (ex-1, ey), (ex-1, ey+1), (ex-1, ey-1), (ex+1, ey-1), (ex+1, ey+1), (ex, ey+1), (ex, ey-1)]
+    entry_adj = [(ex+1, ey), (ex-1, ey), (ex-1, ey+1), (ex-1, ey-1),
+                 (ex+1, ey-1), (ex+1, ey+1), (ex, ey+1), (ex, ey-1)]
 
     if dict_config["EXIT"] in entry_adj:
         send_error(ConfigurationError(), "Entry and exit are adjacent.")

@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 12:39:18 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/19 16:28:09 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 14:02:05 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -14,6 +14,7 @@ from .maze import Maze, Cell
 from rich.live import Live
 from rich.text import Text
 from time import sleep
+from typing import Optional
 
 
 def resolution(maze: Maze, config: dict) -> str:
@@ -23,10 +24,11 @@ def resolution(maze: Maze, config: dict) -> str:
     height = config["HEIGHT"]
     path = ""
 
-    def explore_cell(cell: tuple[int, int], live: Live):
+    def explore_cell(cell: tuple[int, int], live: Optional[Live]):
         maze.change_cell(cell, Cell.SOLVE)
-        live.update(Text.from_ansi(maze.show_maze()))
-        sleep(0.05)
+        if live:
+            live.update(Text.from_ansi(maze.show_maze()))
+            sleep(0.05)
 
     def get_directions(pos: tuple) -> list[tuple]:
         """Give the directions in most efficient order"""
@@ -79,7 +81,7 @@ def resolution(maze: Maze, config: dict) -> str:
                     directions.append((x, y+1))
         return directions
 
-    def solve(pos: tuple, live: Live) -> bool:
+    def solve(pos: tuple, live: Optional[Live]) -> bool:
         """Look recursively for the shortest path"""
         x, y = pos
         directions = get_directions(pos)
@@ -120,10 +122,14 @@ def resolution(maze: Maze, config: dict) -> str:
 
     # Start to solve, stop when finding the exit
 
-    with Live("", refresh_per_second=25) as live:
+    if not config["HIDE"]:
+        with Live("", refresh_per_second=25) as live:
 
-        solve(config["ENTRY"], live)
+            solve(config["ENTRY"], live)
 
-        maze_render = Text.from_ansi(maze.show_maze())
-        live.update(maze_render)
+            maze_render = Text.from_ansi(maze.show_maze())
+            live.update(maze_render)
+    else:
+        solve(config["ENTRY"], None)
+        maze.clean_path()
     return path[::-1]
