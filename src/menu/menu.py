@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 14:45:40 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 16:15:29 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -56,36 +56,35 @@ def show_hide_path(maze: Maze, config: dict):
         config["HIDE"] = not config["HIDE"]
 
 
-def change_maze_settings(config: dict):
+def change_maze_settings(maze: Maze):
 
-    def manage_user_input(user_input: int, config: dict):
-        if user_input == 1:
-            val = int(input("Enter the new Width: "))
-            config["WIDTH"] = val
-            val = int(input("Enter the new Height: "))
-            config["HEIGHT"] = val
-        elif user_input == 2:
-            val = input("Enter the new Entry position: ")
-        elif user_input == 3:
-            val = input("Enter the new Exit position: ")
-        elif user_input == 5:
-            return
+    def get_title() -> str:
+        return f"{Effect.BOLD}{Color.BRIGHT_RED}ASCII Selector{Color.RESET}"
 
-    while (True):
-        try:
-            print_menu(config)
-            user_input = input("Pick what you want to change: ")
-            if (user_input.isdigit() is False):
-                print_error(MenuError(), "Bad Input, "
-                            + "must be an integer (1-5)")
-            elif int(user_input) == 5:
-                break
-            else:
-                manage_user_input(int(user_input), config)
-                print()
+    def print_option() -> None:
+        i = 1
+        color_list = list(Color)
+        for key, _ in maze.THEMES.items():
+            str_temp = f"{i}{color_list.pop(0).value}. {key}{Color.RESET}"
+            print(f"║ {str_temp:70}║")
+            i += 1
 
-        except Exception as e:
-            print(e)
+    print("")
+    print("╔══════════════════════════════════════════════════════════════╗")
+    print(f"║                       {get_title()}                         ║")
+    print("╠══════════════════════════════════════════════════════════════╣")
+    print("║                                                              ║")
+    print_option()
+    print("║                                                              ║")
+    print("╚══════════════════════════════════════════════════════════════╝")
+    print("")
+    user_choice = input("Pick the theme that you want: ")
+    try:
+        maze.change_keys(list(maze.THEMES)[int(user_choice) - 1])
+    except Exception:
+        print(f"Error: Bad input, try a number between 1 and {len(list(maze.THEMES))}")
+
+    print(f"\n{maze.show_maze()}")
 
 
 def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
@@ -98,7 +97,6 @@ def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
             str_temp = f"{value['color']}{key}. {value['name']}{Color.RESET}"
             print(f"║ {str_temp:70}║")
 
-    print("You choose to rotate maze color")
     print("")
     print("╔══════════════════════════════════════════════════════════════╗")
     print(f"║                       {get_title()}                         ║")
@@ -137,7 +135,7 @@ dict_menu_data = {
         "function": show_hide_path,
     },
     3: {
-        "name": "Change maze settings",
+        "name": "Change maze ASCII",
         "color": Color.GOLD,
         "function": change_maze_settings,
     },
@@ -208,7 +206,7 @@ def manage_user_input(user_input: int, color: Dict[str, Color],
     elif int(user_input) == 2:
         dict_menu_data[int(user_input)]["function"](maze, config)
     elif int(user_input) == 3:
-        dict_menu_data[int(user_input)]["function"](config)
+        dict_menu_data[int(user_input)]["function"](maze)
     elif int(user_input) == 4:
         dict_menu_data[int(user_input)]["function"](maze, color)
     else:

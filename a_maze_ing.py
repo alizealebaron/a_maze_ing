@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 14:03:44 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 16:27:11 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -62,10 +62,12 @@ if __name__ == "__main__":
         put_maze_val(maze, config["OUTPUT_FILE"], path)
 
         # Displaying the menu
+        i = 0
         while (True):
             try:
                 print_menu(config)
                 user_input = input("Choice ? (1-5): ")
+                os.system("clear")
                 if (user_input.isdigit() is False):
                     print_error(MenuError(), "Bad Input, "
                                 + "must be an integer (1-5)")
@@ -77,5 +79,7 @@ if __name__ == "__main__":
                 print(e)
 
     except KeyboardInterrupt:
-        _ = os.system("clear")
-        print("Program interrupt ! So long !")
+        os.system("clear")
+        file = open("src/utils/interrupt.txt", "r", encoding='utf-8')
+        content = file.read()
+        print(content)

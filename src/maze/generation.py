@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 13:13:36 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 16:03:43 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -57,10 +57,10 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         else:
             return True
 
-    parity = is_parity_ok() is False and perfect is True
+    parity = (is_parity_ok() is False) and perfect
 
     def get_neighbors(coord: tuple, visited: set, is_unvisited: bool) -> list:
-
+        nonlocal parity
         x, y = coord
         ex, ey = exit
 
@@ -76,7 +76,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             avg_y = ((ny + y) // 2)
             if 0 <= nx < width and 0 <= ny < height:
 
-                if (parity):
+                if (parity is True):
                     # Special case: The exit is in the lower right corner.
                     if ((ex != width - 1) and (ey != height - 1)):
 
@@ -107,7 +107,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         if (maze.is_editable(cell)):
             maze.change_cell(cell, Cell.BLANK)
             live.update(Text.from_ansi(maze.show_maze()))
-            time.sleep(0.02)
+            time.sleep(0.05)
 
     def break_wall_between(cell1: tuple, cell2: tuple, live: Live):
         x1, y1 = cell1
@@ -155,6 +155,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
                        (maze.maze[direction]) != Cell.WALL:
                         random_dir = random.choice(directions[direction])
                         maze.change_cell(random_dir, Cell.BLANK)
+                        return
                 except Exception:
                     pass
         else:
@@ -211,11 +212,9 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         random.seed(config["RANDOM_SEED"])
 
     # Initialization of visited cells
-    parity = is_parity_ok()
-
     visited_cell = set()
 
-    if (parity):
+    if (parity is True):
         visited_cell.add(exit)
 
         # Special case: The exit is in the lower right corner.

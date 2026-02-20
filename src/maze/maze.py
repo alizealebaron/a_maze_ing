@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/20 14:44:01 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 15:13:47 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -25,9 +25,7 @@ import sys
 # +-------------------------------------------------------------------------+
 
 class Color(Enum):
-    RESET = "\033[0m"
 
-    BLACK = "\033[30m"
     RED = "\033[31m"
     GREEN = "\033[32m"
     YELLOW = "\033[33m"
@@ -35,6 +33,7 @@ class Color(Enum):
     MAGENTA = "\033[35m"
     CYAN = "\033[36m"
     LIGHT_GRAY = "\033[37m"
+    BLACK = "\033[30m"
 
     DARK_GRAY = "\033[90m"
     BRIGHT_RED = "\033[91m"
@@ -49,6 +48,8 @@ class Color(Enum):
     CORAL = "\033[38;5;203m"
     LIME = "\033[38;5;118m"
     BROWN = "\033[38;5;130m"
+
+    RESET = "\033[0m"
 
     def __str__(self):
         return self.value
@@ -100,21 +101,21 @@ class Maze:
             sys.exit(2)
 
         self.THEMES = {
-            "default": {
+            "Default": {
                 "ENTRY": "E", "EXIT": "X", "BLANK": " ",
                 "WALL": "█", "STRICT": "▒", "SOLVE": "•"
             },
-            1: {
+            "Cubic": {
                 "ENTRY": "🟦", "EXIT": "🟥", "BLANK": "  ",
-                "WALL": "⬛", "STRICT": "🟨", "SOLVE": "🟩"
+                "WALL": "⬛", "STRICT": "⬜", "SOLVE": "🟩"
             },
-            2: {
-                "ENTRY": "🚪", "EXIT": "🏁", "BLANK": "⬜",
+            "Emojis": {
+                "ENTRY": "🚪", "EXIT": "🏁", "BLANK": "  ",
                 "WALL": "🧱", "STRICT": "🚫", "SOLVE": "⭐"
             }
         }
 
-        self.key = self.THEMES["default"]
+        self.key = self.THEMES["Default"]
 
     def change_cell(self, cell: Tuple[int, int], val: Cell) -> None:
         x, y = cell
@@ -198,7 +199,7 @@ class Maze:
             str_maze += (f"{self.color['STRICT']}{self.key['STRICT']}")
             for x in range(self.width):
                 str_maze += f"{self.color[self.maze[(x, y)].name]}"
-                str_maze += f"{self.maze[(x, y)].value}"
+                str_maze += f"{self.key[self.maze[(x, y)].name]}"
                 str_maze += Color.RESET.value
             str_maze += f"{self.color['STRICT']}{self.key['STRICT']}\n"
         # Lower border
