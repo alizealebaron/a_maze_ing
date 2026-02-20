@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/19 12:25:41 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/20 12:24:50 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -21,6 +21,8 @@ from src.utils.theme import Theme
 from typing import Dict
 from random import choice, seed
 from src.maze.generation import hunt_and_kill
+from src.maze.resolution import resolution
+# from src.utils.error import MenuError, print_error
 
 
 # +-------------------------------------------------------------------------+
@@ -31,19 +33,57 @@ def regen_maze(maze: Maze, config: dict):
 
     maze.clean_maze()
     hunt_and_kill(maze, config)
+    resolution(maze, config)
 
 
-def show_hide_path():
-    # TODO
+def show_hide_path(maze: Maze, config: dict):
     print("You choose to show or hide the path")
 
+    def clean():
+        maze.clean_path()
+        print(maze.show_maze())
 
-def show_hide_graphic():
-    # TODO
-    print("You choose to show or hide the graphic maze")
+    def show():
+        resolution(maze, config)
+
+    if config["HIDE"]:
+        clean()
+        config["HIDE"] = not config["HIDE"]
+    else:
+        show()
+        config["HIDE"] = not config["HIDE"]
 
 
-def rotate_maze_color(color: Dict[str, Color]) -> None:
+def change_maze_settings(config: dict):
+
+    # def manage_user_input(user_input: int, config: dict):
+    #     if user_input == 1:
+    #         val = input("Enter the new Width: ")
+    #         config["WIDTH"] = val
+    #         val = input("Enter the new Height: ")
+    #         config["HEIGHT"] = val
+    #     elif user_input == 2:
+    #         val = input("Enter the new Entry position: ")
+    #     elif user_input == 5:
+    #         return
+
+    # while (True):
+    #     try:
+    #         print_menu(config)
+    #         user_input = input("Pick what you want to change: ")
+    #         if (user_input.isdigit() is False):
+    #             print_error(MenuError(), "Bad Input, "
+    #                         + "must be an integer (1-5)")
+    #         else:
+    #             manage_user_input(user_input, config)
+    #             print()
+
+    #     except Exception as e:
+    #         print(e)
+    pass
+
+
+def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
 
     def get_title() -> str:
         return f"{Color.ORANGE}Theme Selector{Color.RESET}"
@@ -68,6 +108,7 @@ def rotate_maze_color(color: Dict[str, Color]) -> None:
         get_random_color(color)
     else:
         set_theme(color, dict_theme_data[int(user_choice)]["theme"])
+    print(maze.show_maze())
 
 
 def end_program():
@@ -91,9 +132,9 @@ dict_menu_data = {
         "function": show_hide_path,
     },
     3: {
-        "name": "Show/Hide graphic maze",
+        "name": "Change maze settings",
         "color": Color.GOLD,
-        "function": show_hide_graphic,
+        "function": change_maze_settings,
     },
     4: {
         "name": "Rotate maze colors",
@@ -144,8 +185,12 @@ def manage_user_input(user_input: int, color: Dict[str, Color],
                       maze: Maze, config: dict) -> None:
     if int(user_input) == 1:
         dict_menu_data[int(user_input)]["function"](maze, config)
+    elif int(user_input) == 2:
+        dict_menu_data[int(user_input)]["function"](maze, config)
+    elif int(user_input) == 3:
+        dict_menu_data[int(user_input)]["function"](config)
     elif int(user_input) == 4:
-        dict_menu_data[int(user_input)]["function"](color)
+        dict_menu_data[int(user_input)]["function"](maze, color)
     else:
         dict_menu_data[int(user_input)]["function"]()
 
@@ -185,12 +230,21 @@ def print_seed(config: dict) -> None:
 def get_random_color(color: Dict[str, Color]) -> None:
     seed()
     color_list = list(Color)
-    color["STRICT"] = choice(color_list)
-    color["WALL"] = choice(color_list)
-    color["ENTRY"] = choice(color_list)
-    color["EXIT"] = choice(color_list)
-    color["BLANK"] = choice(color_list)
-    color["SOLVE"] = choice(color_list)
+    color["STRICT"] = choice(color_list).value
+    color["WALL"] = choice(color_list).value
+    color["BLANK"] = choice(color_list).value
+    color["SOLVE"] = choice(color_list).value
+    if color["BLANK"] in [color["WALL"], color["STRICT"], color["SOLVE"]]:
+        get_random_color(color)
+        return
+    bg = color["BLANK"]
+    bgval = bg[color["BLANK"].index("[")+1]
+    bgend = bg[color["BLANK"].index("[")+2:len(bg)]
+    bg = "\033[" + str(int(bgval) + 1) + bgend
+    color["BLANK"] = bg
+    color["SOLVE"] += bg
+    color["ENTRY"] = choice(color_list).value + bg
+    color["EXIT"] = choice(color_list).value + bg
 
 
 def init_color() -> Dict[str, Color]:
@@ -206,7 +260,12 @@ def init_color() -> Dict[str, Color]:
 def set_theme(color: Dict[str, Color], theme: Theme):
     color["STRICT"] = theme.value["STRICT"]
     color["WALL"] = theme.value["WALL"]
-    color["ENTRY"] = theme.value["ENTRY"]
-    color["EXIT"] = theme.value["EXIT"]
     color["BLANK"] = theme.value["BLANK"]
-    color["SOLVE"] = theme.value["SOLVE"]
+    bg = color["BLANK"].value
+    bgval = bg[color["BLANK"].value.index("[")+1]
+    bgend = bg[color["BLANK"].value.index("[")+2:len(bg)]
+    bg = "\033[" + str(int(bgval) + 1) + bgend
+    color["BLANK"] = bg
+    color["SOLVE"] = theme.value["SOLVE"].value + bg
+    color["ENTRY"] = theme.value["ENTRY"].value + bg
+    color["EXIT"] = theme.value["EXIT"].value + bg

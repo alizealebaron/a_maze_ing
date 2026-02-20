@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/20 12:24:37 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 12:29:23 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -61,10 +61,10 @@ class Color(Enum):
 class Cell(Enum):
     ENTRY = "E"
     EXIT = "X"
-    BLANK = "░"
+    BLANK = " "
     WALL = "█"
     STRICT = "▒"
-    SOLVE = "8"
+    SOLVE = "•"
 
 
 class MazeError(Exception):
@@ -162,6 +162,12 @@ class Maze:
                 if (self.is_editable((x, y))):
                     self.change_cell((x, y), Cell.WALL)
 
+    def clean_path(self) -> None:
+        for x in range(0, self.width):
+            for y in range(0, self.height):
+                if (self.maze[(x, y)] == Cell.SOLVE):
+                    self.change_cell((x, y), Cell.BLANK)
+
     def show_maze(self) -> str:
         str_maze = ""
 
@@ -175,6 +181,7 @@ class Maze:
             for x in range(self.width):
                 str_maze += f"{self.color[self.maze[(x, y)].name]}"
                 str_maze += f"{self.maze[(x, y)].value}"
+                str_maze += Color.RESET.value
             str_maze += f"{self.color['STRICT']}{Cell.STRICT.value}\n"
         # Lower border
         for x in range(self.width + 2):

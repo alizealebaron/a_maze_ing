@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 11:32:30 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 12:29:14 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -117,6 +117,8 @@ def required_config_key(filename: str) -> dict:
 
     if dict_config["EXIT"] in entry_adj:
         send_error(ConfigurationError(), "Entry and exit are adjacent.")
+
+    dict_config["HIDE"] = True
 
     return (dict_config)
 

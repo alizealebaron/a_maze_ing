@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 12:39:18 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/19 12:22:21 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/19 16:28:09 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -14,10 +14,6 @@ from .maze import Maze, Cell
 from rich.live import Live
 from rich.text import Text
 from time import sleep
-
-
-class StopPathFinder(Exception):
-    pass
 
 
 def resolution(maze: Maze, config: dict) -> str:

@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 12:23:32 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 12:28:13 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -72,7 +72,6 @@ if __name__ == "__main__":
                 else:
                     manage_user_input(user_input, color, maze, config)
                     print()
-                    print(maze.show_maze())
 
             except Exception as e:
                 print(e)
