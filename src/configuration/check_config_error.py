@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/12 15:32:22 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/20 11:44:59 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -109,6 +109,9 @@ def required_config_key(filename: str) -> dict:
     if (dict_config["EXIT"] == dict_config["ENTRY"]):
         send_error(ConfigurationError(), "Entry and Exit is at the "
                    "same place.")
+
+    # Config value for hiding or showing the maze
+    dict_config["HIDE"] = True
 
     return (dict_config)
 
