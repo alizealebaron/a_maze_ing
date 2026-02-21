@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/21 13:34:50 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/21 13:40:12 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -113,7 +113,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
                 if (parity is True):
                     # Special case: The exit is in the lower right corner.
-                    if (((ex == 0 and ey == 0) or (ex == width - 1 and ey == height - 1)) is False):
+                    if (((ex == 0 and ey == 0) or
+                         (ex == width - 1 and ey == height - 1)) is False):
 
                         if (nx, ny) in lock_coord:
                             continue
@@ -266,7 +267,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         visited_cell.add(exit)
 
         # Special case: The exit is in the lower right corner.
-        if (((ex == 0 and ey == 0) or (ex == width - 1 and ey == height - 1)) is False):
+        if (((ex == 0 and ey == 0) or
+             (ex == width - 1 and ey == height - 1)) is False):
             visited_cell.add(lock_coord[0])
             visited_cell.add(lock_coord[1])
 

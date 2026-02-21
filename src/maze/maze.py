@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/20 16:32:24 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/21 13:48:24 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -25,6 +25,13 @@ import sys
 # +-------------------------------------------------------------------------+
 
 class Color(Enum):
+    """
+    An enumeration of ANSI escape sequences for terminal text coloring.
+
+    This class provides a set of color constants that can be used to format
+    terminal output. It includes standard colors, bright variants, and specific
+    256-color palette codes.
+    """
 
     RED = "\033[31m"
     GREEN = "\033[32m"
@@ -52,10 +59,29 @@ class Color(Enum):
     RESET = "\033[0m"
 
     def __str__(self):
+        """
+        Returns the ANSI escape sequence string associated with the color.
+
+        Returns:
+            str: The raw ANSI color code.
+        """
         return self.value
 
 
 class Cell(Enum):
+    """
+    An enumeration representing different types of cells in a
+    maze or grid system.
+
+    Attributes:
+        ENTRY (str): Represents the starting point ("E").
+        EXIT (str): Represents the destination point ("X").
+        BLANK (str): Represents an empty, navigable path (" ").
+        WALL (str): Represents a solid, impassable barrier ("█").
+        STRICT (str): Represents a restricted or special movement area ("▒").
+        SOLVE (str): Represents a point belonging to the calculated
+        solution path ("•").
+    """
     ENTRY = "E"
     EXIT = "X"
     BLANK = " "
@@ -69,10 +95,69 @@ class Cell(Enum):
 # +-------------------------------------------------------------------------+
 
 class MazeError(Exception):
+    """
+    Custom exception class for handling errors related
+    to maze operations.
+    """
     pass
 
 
 class Maze:
+    """
+    A class representing a maze structure with customizable+
+    themes and cell types.
+
+    Attributes:
+        width (int): The width of the maze.
+        height (int): The height of the maze.
+        entry (Tuple[int, int]): The coordinates of the maze entry point.
+        exit (Tuple[int, int]): The coordinates of the maze exit point.
+        maze (Dict[Tuple[int, int], Cell]): A dictionary mapping
+            cell coordinates to their types.
+        color (Dict[str, Color]): A dictionary mapping cell types
+            to their corresponding colors.
+        THEMES (Dict[str, Dict[str, str]]): A dictionary of themes
+            for visual representation of the maze.
+        key (Dict[str, str]): The current theme's mapping of
+            cell types to their visual representations.
+
+    Methods:
+        __init__(self, width: int, height: int, entry: Tuple[int, int],
+        exit: Tuple[int, int], color: Dict[str, Color]) -> None:
+            Initializes the maze with the specified dimensions,
+            entry and exit points, and color scheme.
+
+        change_cell(self, cell: Tuple[int, int], val: Cell) -> None:
+            Changes the type of a specific cell in the maze,
+            ensuring it is editable and valid.
+
+        is_editable(self, cell: Tuple[int, int]) -> bool:
+            Checks if a specific cell can be edited
+            (i.e., it is not an entry, exit, or strict cell).
+
+        is_ok_for_logo(self) -> bool:
+            Determines if the maze dimensions are sufficient
+            to accommodate a predefined logo pattern.
+
+        put_logo(self) -> None:
+            Places a predefined logo pattern in the center
+            of the maze if the dimensions allow for it.
+
+        clean_maze(self) -> None:
+            Resets all editable cells in the maze to be walls.
+
+        clean_path(self) -> None:
+            Resets all cells marked as part of the solution path back to blank.
+
+        show_maze(self) -> str:
+            Generates a string representation of the maze,
+            including borders and colored cell types.
+
+        change_keys(self, key: int | str) -> None:
+            Changes the current theme for visual representation
+            of the maze based on a provided key.
+    """
+
     def __init__(self, width: int, height: int,
                  entry: Tuple[int, int], exit: Tuple[int, int],
                  color: Dict[str, Color]) -> None:
