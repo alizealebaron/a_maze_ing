@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 16:15:29 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/21 17:02:39 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -22,14 +22,26 @@ from typing import Dict
 from random import choice, seed
 from src.maze.generation import hunt_and_kill
 from src.maze.resolution import resolution
-from src.utils.error import MenuError, print_error
 
 
 # +-------------------------------------------------------------------------+
 # |                            Input Functions                              |
 # +-------------------------------------------------------------------------+
 
-def regen_maze(maze: Maze, config: dict, color: dict):
+def regen_maze(maze: Maze, config: dict, color: dict) -> None:
+    """
+    Regenerate a new maze using the Hunt-and-Kill algorithm and solve it.
+    This function first cleans the current maze, then generates a new maze
+    using the Hunt-and-Kill algorithm.
+    After the new maze is generated, itcalls the resolution function to find
+    the path from the entry to the exit.
+    Finally, it prints the newly generated maze.
+
+    Args:
+        maze (Maze): The maze object to be regenerated.
+        config (dict): A configuration dictionary containing maze settings.
+        color (dict): A dictionary containing color settings for the maze.
+    """
 
     maze.clean_maze()
     hunt_and_kill(maze, config)
@@ -37,8 +49,18 @@ def regen_maze(maze: Maze, config: dict, color: dict):
     return maze
 
 
-def show_hide_path(maze: Maze, config: dict):
-    print("\nYou choose to show or hide the path\n")
+def show_hide_path(maze: Maze, config: dict) -> None:
+    """
+    Toggle the display of the path from the entry to the exit in the maze.
+    This function checks the current state of the "HIDE" setting in the config.
+    If "HIDE" is True, it will call the resolution function to find and display
+    the path, and then set "HIDE" to False. If "HIDE" is False, it will clean
+    the path from the maze and set "HIDE" to True.
+
+    Args:
+        maze (Maze): The maze object to be modified.
+        config (dict): A configuration dictionary setting.
+    """
 
     def clean():
         maze.clean_path()
@@ -56,7 +78,24 @@ def show_hide_path(maze: Maze, config: dict):
         config["HIDE"] = not config["HIDE"]
 
 
-def change_maze_settings(maze: Maze):
+def change_maze_settings(maze: Maze) -> None:
+    """
+    Change the ASCII characters used to represent different elements of the
+    maze.
+    This function displays a menu of available themes for the maze's ASCII
+    representation. The user can select a theme by entering the corresponding
+    number. The function then updates the maze's ASCII settings based on the
+    selected theme and prints the updated maze.
+
+    Args:
+        maze (Maze): The maze object whose ASCII settings are to be changed.
+
+    Method:
+        get_title() -> str: Returns the title of the menu.
+        print_option() -> None: Prints the available theme options for the
+                                maze.
+
+    """
 
     def get_title() -> str:
         return f"{Effect.BOLD}{Color.BRIGHT_RED}ASCII Selector{Color.RESET}"
@@ -82,12 +121,29 @@ def change_maze_settings(maze: Maze):
     try:
         maze.change_keys(list(maze.THEMES)[int(user_choice) - 1])
     except Exception:
-        print(f"Error: Bad input, try a number between 1 and {len(list(maze.THEMES))}")
+        print(f"Error: Bad input, try a number between 1 and "
+              f"{len(list(maze.THEMES))}")
 
     print(f"\n{maze.show_maze()}")
 
 
 def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
+    """
+    Rotate the colors used in the maze by shifting each color to
+    the next one in the color dictionary. This function updates
+    the color settings for the maze by rotating the colors in the
+    color dictionary. It then prints the maze with the new color settings.
+
+    Args:
+        maze (Maze): The maze object whose colors are to be rotated.
+        color (Dict[str, Color]): A dictionary containing the current color
+                                settings for the maze.
+
+    Method:
+        get_title() -> str: Returns the title of the menu.
+        print_option() -> None: Prints the available theme options for
+                                the maze.
+    """
 
     def get_title() -> str:
         return f"{Effect.BOLD}{Color.ORANGE}Theme Selector{Color.RESET}"
@@ -114,7 +170,11 @@ def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
     print(maze.show_maze())
 
 
-def end_program():
+def end_program() -> None:
+    """
+    End the program by printing a goodbye message and exiting with a
+    status code of 2.
+    """
     print("End of the program, bye !")
     exit(2)
 
@@ -201,6 +261,20 @@ dict_theme_data = {
 
 def manage_user_input(user_input: int, color: Dict[str, Color],
                       maze: Maze, config: dict) -> None:
+    """
+        Manage the user's menu selection by calling the corresponding function
+        based on the input.
+
+        Args:
+            user_input (int): The number corresponding to the user's menu
+                              choice.
+            color (Dict[str, Color]): A dictionary containing the current
+                                      color settings for the maze.
+            maze (Maze): The maze object to be manipulated based on
+                         the user's choice.
+            config (dict): A configuration dictionary containing maze settings
+                           that may be needed for certain functions.
+    """
     if int(user_input) == 1:
         dict_menu_data[int(user_input)]["function"](maze, config, color)
     elif int(user_input) == 2:
@@ -214,6 +288,22 @@ def manage_user_input(user_input: int, color: Dict[str, Color],
 
 
 def print_menu(config: dict) -> None:
+    """
+    Print the menu to the console, displaying the available options for the
+    user to interact with the maze.
+    This function constructs a visually appealing menu using ASCII characters
+    and colors.
+    It displays the current seed used for maze generation and lists the
+    available options for the user to choose from.
+
+    Args:
+        config (dict): A configuration dictionary containing settings.
+
+    Method:
+        get_title() -> str: Returns the title of the menu.
+        print_option() -> None: Prints the available options for the
+                                user to select from.
+    """
 
     def get_title() -> str:
         return (f"{Color.ORANGE}{Effect.BOLD}A_maze_ing menu{Color.RESET}")
@@ -236,6 +326,13 @@ def print_menu(config: dict) -> None:
 
 
 def print_seed(config: dict) -> None:
+    """
+    Print the current seed used for maze generation to the console.
+
+    Args:
+        config (dict): A configuration dictionary containing the seed
+                       information.
+    """
 
     try:
         seed = config["SEED"]
@@ -246,6 +343,18 @@ def print_seed(config: dict) -> None:
 
 
 def get_random_color(color: Dict[str, Color]) -> None:
+    """
+    Generate random colors for the maze elements and update the color
+    dictionary.
+    This function randomly selects colors for the "STRICT", "WALL",
+    "BLANK", and "SOLVE" elements of the maze. It ensures that the "BLANK"
+    color is different from the other colors to maintain visibility.
+
+    Args:
+        color (Dict[str, Color]): A dictionary containing the current
+        color settings, which will be updated with new random colors.
+    """
+
     seed()
     color_list = list(Color)
     color["STRICT"] = choice(color_list).value
@@ -266,6 +375,14 @@ def get_random_color(color: Dict[str, Color]) -> None:
 
 
 def init_color() -> Dict[str, Color]:
+    """
+    Initialize the color settings for the maze by creating a dictionary
+    with default color values for each maze element.
+
+    Returns:
+        Dict[str, Color]: A dictionary containing the initial color
+                          settings.
+    """
     color = {"STRICT": Color.WHITE,
              "WALL": Color.WHITE,
              "ENTRY": Color.LIME,
@@ -276,6 +393,15 @@ def init_color() -> Dict[str, Color]:
 
 
 def set_theme(color: Dict[str, Color], theme: Theme):
+    """
+    Set the color settings for the maze based on a selected theme.
+    This function updates the color settings for the maze elements according to
+    the specified theme.
+
+    Args:
+        color (Dict[str, Color]): A dictionary containing the color settings.
+        theme (Theme): The selected theme that contains the color settings.
+    """
     color["STRICT"] = theme.value["STRICT"]
     color["WALL"] = theme.value["WALL"]
     color["BLANK"] = theme.value["BLANK"]
