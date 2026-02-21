@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 11:36:57 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/13 11:24:48 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/21 17:08:52 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -23,6 +23,10 @@ from enum import Enum
 # +-------------------------------------------------------------------------+
 
 class Effect(Enum):
+    """
+    An enumeration of terminal effects that can be applied to text.
+    """
+
     RESET = "\033[0m"
     BOLD = "\033[1m"
     UNDERLINE = "\033[4m"
