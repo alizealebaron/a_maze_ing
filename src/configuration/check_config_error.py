@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 11:10:25 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/23 17:53:50 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -160,6 +160,12 @@ def required_config_key(filename: str) -> dict:
         send_error(ConfigurationError(), "Entry and exit are adjacent.")
 
     dict_config["HIDE"] = True
+
+    if "SEED" in dict_config:
+        try:
+            dict_config["SEED"] = int(dict_config["SEED"])
+        except ValueError:
+            send_error(ConfigurationError(), "SEED must be an integer.")
 
     return (dict_config)
 

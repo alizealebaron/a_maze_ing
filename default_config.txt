@@ -1,9 +1,9 @@
 # This is a default config file, you are please to edit for all your tests
 
-WIDTH=6
-HEIGHT=6
+WIDTH=19
+HEIGHT=19
 ENTRY=1,1
 EXIT=3,3
 OUTPUT_FILE=debugmaze.txt
 PERFECT=True
-# SEED=42
+SEED=55549000296928
