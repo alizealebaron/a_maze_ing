@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 14:14:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 11:28:07 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 18:03:43 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -17,9 +17,11 @@
 VENV_PATH = .venv
 VENV_PYTHON = $(VENV_PATH)/bin/python3
 VENV_PIP = $(VENV_PATH)/bin/pip
+VENV_POETRY = $(VENV_PATH)/bin/poetry
 
 PYTHON = $(if $(wildcard $(VENV_PYTHON)), $(VENV_PYTHON), python3)
 PIP = $(if $(wildcard $(VENV_PIP)), $(VENV_PIP), pip)
+POETRY = $(if $(wildcard $(VENV_POETRY)), $(VENV_POETRY), poetry)
 
 MYPY_FLAGS = --warn-return-any --warn-unused-ignores --ignore-missing-imports \
 			 --disallow-untyped-defs --check-untyped-defs
@@ -59,7 +61,7 @@ PINK 	:= \033[35m
 install:
 	@echo "$(CYAN)Installing ${NAME} packages...$(RESET)"
 	@$(PIP) install poetry
-	@poetry install
+	@$(POETRY) install
 	@echo "$(GREEN)✅ Packages installed !$(RESET)"
 
 # Run the main file of a_maze_ing in debug mode
