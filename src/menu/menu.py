@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 13:50:38 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/23 13:54:42 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -46,7 +46,8 @@ def regen_maze(maze: Maze, config: dict, color: dict) -> Maze:
 
     maze.clean_maze()
     hunt_and_kill(maze, config)
-    os.system("clear")
+    if not config["HIDE"]:
+        os.system("clear")
     resolution(maze, config)
     return maze
 
