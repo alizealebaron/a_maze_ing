@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 14:14:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 11:14:37 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 11:28:07 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -56,7 +56,8 @@ PINK 	:= \033[35m
 # Install the Python packages used in a_maze_ing
 install:
 	@echo "$(CYAN)Installing ${NAME} packages...$(RESET)"
-	@$(PIP) install -r requirements.txt
+	@$(PIP) install poetry
+	@poetry install
 	@echo "$(GREEN)✅ Packages installed !$(RESET)"
 
 # Run the main file of a_maze_ing in debug mode
@@ -87,6 +88,10 @@ lint-strict:
 	@echo "$(PINK)$(BOLD)[Checking mypy and flake8 norm is strict mode]$(RESET)"
 	@-flake8 ${SRC_FILES}
 	@-mypy ${SRC_FILES} $(MYPY_FLAGS) --strict
+
+# Update pip requirements
+pipfreeze:
+	@pip freeze > requirements.txt
 
 # Prevent rule to be associated with files.
 .PHONY: install clean run debug lint lint-strict
