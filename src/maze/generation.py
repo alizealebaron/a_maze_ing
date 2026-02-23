@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 13:47:26 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/23 15:27:46 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -82,16 +82,25 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         par_ex = ex % 2 == 0
         par_ey = ey % 2 == 0
 
-        if (par_ex != par_x and par_y != par_ey):
+        # print(f"x = {par_x} | y = {par_y} | ex = {par_ex} | ey = {par_ey}")
+
+        if (par_x is True and par_y is False and par_ey is True):
             return False
-        elif (par_x is False and par_y is False and par_ey is True):
+        elif (par_x is False and par_y is True and par_ex is True):
             return False
-        elif (par_x is True and par_y is True and par_ey is False):
+        elif (par_x is False and par_y is False and par_ey is False):
+            # print("2")
+            return False
+        elif (par_x is True and par_y is True and par_ex is False):
+            # print("3")
             return False
         else:
             return True
 
+    # print(f"Parity : {is_parity_ok()} Perfect : {perfect}")
     parity = (is_parity_ok() is False) and perfect
+    # print(f"is_parity_ok() is False = {is_parity_ok() is False}")
+    # print(f"Total : {parity}")
 
     def get_neighbors(coord: tuple, visited: set, is_unvisited: bool) -> list:
         x, y = coord
@@ -143,7 +152,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         if (maze.is_editable(cell)):
             maze.change_cell(cell, Cell.BLANK)
             live.update(Text.from_ansi(maze.show_maze()))
-            time.sleep(0.05)
+            time.sleep(0.02)
 
     def break_wall_between(cell1: tuple, cell2: tuple, live: Live) -> None:
         x1, y1 = cell1
