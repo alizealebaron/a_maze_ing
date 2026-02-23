@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/21 13:48:24 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 12:14:59 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -58,7 +58,7 @@ class Color(Enum):
 
     RESET = "\033[0m"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Returns the ANSI escape sequence string associated with the color.
 
@@ -160,7 +160,7 @@ class Maze:
 
     def __init__(self, width: int, height: int,
                  entry: Tuple[int, int], exit: Tuple[int, int],
-                 color: Dict[str, Color]) -> None:
+                 color: Dict[str, Color | str]) -> None:
         self.width: int = width
         self.height: int = height
         self.entry: tuple = (-1, -1)
@@ -298,7 +298,7 @@ class Maze:
 
         return str_maze
 
-    def change_keys(self, key: int | str) -> None:
+    def change_keys(self, key: str) -> None:
 
         try:
             self.key = self.THEMES[key]

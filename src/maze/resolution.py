@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 12:39:18 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/21 16:40:39 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 10:52:05 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -58,7 +58,7 @@ def resolution(maze: Maze, config: dict) -> str:
     height = config["HEIGHT"]
     path = ""
 
-    def explore_cell(cell: tuple[int, int], live: Optional[Live]):
+    def explore_cell(cell: tuple[int, int], live: Optional[Live]) -> None:
         """
         Mark a cell as part of the current path and refresh the UI.
 

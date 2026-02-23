@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 11:36:57 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/21 17:08:52 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 10:45:21 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -32,5 +32,5 @@ class Effect(Enum):
     UNDERLINE = "\033[4m"
     REVERSE = "\033[7m"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value

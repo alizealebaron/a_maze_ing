@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 11:23:38 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 13:50:26 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
                     print_error(MenuError(), "Bad Input, "
                                 + "must be an integer (1-5)")
                 else:
-                    manage_user_input(user_input, color, maze, config)
+                    manage_user_input(int(user_input), color, maze, config)
                     print()
 
             except Exception as e:

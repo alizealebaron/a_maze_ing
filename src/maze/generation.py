@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/21 13:40:12 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 13:47:26 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -139,13 +139,13 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
         return valid_neighbors
 
-    def try_change_cell(maze: Maze, cell: tuple[int, int], live: Live):
+    def try_change_cell(maze: Maze, cell: tuple[int, int], live: Live) -> None:
         if (maze.is_editable(cell)):
             maze.change_cell(cell, Cell.BLANK)
             live.update(Text.from_ansi(maze.show_maze()))
             time.sleep(0.05)
 
-    def break_wall_between(cell1: tuple, cell2: tuple, live: Live):
+    def break_wall_between(cell1: tuple, cell2: tuple, live: Live) -> None:
         x1, y1 = cell1
         x2, y2 = cell2
 
@@ -160,11 +160,11 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
                        visited_cell: set, live: Live) -> None:
         exit_node = config["EXIT"]
         x, y = exit_node
-        directions = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
+        direc = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
 
         neighbors = []
 
-        for nx, ny in directions:
+        for nx, ny in direc:
             avg_x = ((nx + x) // 2)
             avg_y = ((ny + y) // 2)
             try:
@@ -178,7 +178,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
                 pass
 
         if not neighbors:
-            directions = {
+            directions: dict[tuple, list[tuple]] = {
                 (x+1, y+1): [(x+1, y), (x, y+1)],
                 (x+1, y-1): [(x+1, y), (x, y-1)],
                 (x-1, y+1): [(x-1, y), (x, y+1)],
@@ -212,7 +212,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
         return False
 
-    def kill(current_cell: tuple[int, int], visited_cell: set, live: Live):
+    def kill(current_cell: tuple[int, int],
+             visited_cell: set, live: Live) -> None:
 
         visited_cell.add(current_cell)
 
@@ -231,7 +232,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             visited_cell.add(next_cell)
             current_cell = next_cell
 
-    def hunt(visited_cell, live):
+    def hunt(visited_cell: set, live: Live) -> tuple | None:
 
         # Calculing parity of the algorithm
 

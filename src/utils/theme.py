@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/13 11:39:36 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/21 17:11:19 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 11:01:06 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -77,5 +77,5 @@ class Theme(Enum):
                    "EXIT": Color.WHITE,
                    "SOLVE": Color.WHITE}
 
-    def __str__(self):
-        return self.value
+    def __str__(self) -> str:
+        return str(self.value)

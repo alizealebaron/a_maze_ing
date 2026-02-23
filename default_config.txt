@@ -1,6 +1,9 @@
-WIDTH=7
-HEIGHT=7
-ENTRY=3,5
-EXIT=0,0
+# This is a default config file, you are please to edit for all your tests
+
+WIDTH=8
+HEIGHT=8
+ENTRY=0,0
+EXIT=2,1
 OUTPUT_FILE=debugmaze.txt
 PERFECT=True
+#SEED=42

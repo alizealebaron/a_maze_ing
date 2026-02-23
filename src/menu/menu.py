@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 11:24:00 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 13:50:38 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -18,17 +18,18 @@
 from src.maze.maze import Color, Maze
 from src.utils.effect import Effect
 from src.utils.theme import Theme
-from typing import Dict
+from typing import Dict, Callable, cast
 from random import choice, seed
 from src.maze.generation import hunt_and_kill
 from src.maze.resolution import resolution
+import os
 
 
 # +-------------------------------------------------------------------------+
 # |                            Input Functions                              |
 # +-------------------------------------------------------------------------+
 
-def regen_maze(maze: Maze, config: dict, color: dict) -> None:
+def regen_maze(maze: Maze, config: dict, color: dict) -> Maze:
     """
     Regenerate a new maze using the Hunt-and-Kill algorithm and solve it.
     This function first cleans the current maze, then generates a new maze
@@ -45,6 +46,7 @@ def regen_maze(maze: Maze, config: dict, color: dict) -> None:
 
     maze.clean_maze()
     hunt_and_kill(maze, config)
+    os.system("clear")
     resolution(maze, config)
     return maze
 
@@ -62,11 +64,11 @@ def show_hide_path(maze: Maze, config: dict) -> None:
         config (dict): A configuration dictionary setting.
     """
 
-    def clean():
+    def clean() -> None:
         maze.clean_path()
         print(maze.show_maze())
 
-    def show():
+    def show() -> None:
         path = resolution(maze, config)
         print(f"The exit is {len(path)} steps away from the entry!")
 
@@ -127,7 +129,7 @@ def change_maze_settings(maze: Maze) -> None:
     print(f"\n{maze.show_maze()}")
 
 
-def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
+def rotate_maze_color(maze: Maze, color: Dict[str, Color | str]) -> None:
     """
     Rotate the colors used in the maze by shifting each color to
     the next one in the color dictionary. This function updates
@@ -165,8 +167,11 @@ def rotate_maze_color(maze: Maze, color: Dict[str, Color]) -> None:
     user_choice = input("Pick the theme that you want: ")
     if int(user_choice) == 1:
         get_random_color(color)
+    elif int(user_choice) > 9 or int(user_choice) <= 0:
+        print(f"\nInvalid theme, {user_choice} is not an option")
     else:
-        set_theme(color, dict_theme_data[int(user_choice)]["theme"])
+        theme = dict_theme_data[int(user_choice)]
+        set_theme(color, Theme(theme.get("theme")))
     print(maze.show_maze())
 
 
@@ -183,7 +188,7 @@ def end_program() -> None:
 # |                                Variable                                 |
 # +-------------------------------------------------------------------------+
 
-dict_menu_data = {
+dict_menu_data: dict[int, dict[str, str | Color | Callable]] = {
     1: {
         "name": "Re-generate a new maze",
         "color": Color.SKY_BLUE,
@@ -211,7 +216,7 @@ dict_menu_data = {
     }
 }
 
-dict_theme_data = {
+dict_theme_data: dict[int, dict[str, str | Color | Theme | None]] = {
     1: {
         "name": "Random theme generator",
         "color": Color.SKY_BLUE,
@@ -259,7 +264,7 @@ dict_theme_data = {
 # |                                Function                                 |
 # +-------------------------------------------------------------------------+
 
-def manage_user_input(user_input: int, color: Dict[str, Color],
+def manage_user_input(user_input: int, color: Dict[str, Color | str],
                       maze: Maze, config: dict) -> None:
     """
         Manage the user's menu selection by calling the corresponding function
@@ -276,15 +281,17 @@ def manage_user_input(user_input: int, color: Dict[str, Color],
                            that may be needed for certain functions.
     """
     if int(user_input) == 1:
-        dict_menu_data[int(user_input)]["function"](maze, config, color)
+        cast(Callable, dict_menu_data[1]["function"])(maze, config, color)
     elif int(user_input) == 2:
-        dict_menu_data[int(user_input)]["function"](maze, config)
+        cast(Callable, dict_menu_data[2]["function"])(maze, config)
     elif int(user_input) == 3:
-        dict_menu_data[int(user_input)]["function"](maze)
+        cast(Callable, dict_menu_data[3]["function"])(maze)
     elif int(user_input) == 4:
-        dict_menu_data[int(user_input)]["function"](maze, color)
+        cast(Callable, dict_menu_data[4]["function"])(maze, color)
+    elif int(user_input) == 5:
+        cast(Callable, dict_menu_data[5]["function"])()
     else:
-        dict_menu_data[int(user_input)]["function"]()
+        print(f"\nInvalid choice, {user_input} is not an option")
 
 
 def print_menu(config: dict) -> None:
@@ -342,7 +349,7 @@ def print_seed(config: dict) -> None:
     print(f"Seed : {seed}")
 
 
-def get_random_color(color: Dict[str, Color]) -> None:
+def get_random_color(color: Dict[str, Color | str]) -> None:
     """
     Generate random colors for the maze elements and update the color
     dictionary.
@@ -364,17 +371,17 @@ def get_random_color(color: Dict[str, Color]) -> None:
     if color["BLANK"] in [color["WALL"], color["STRICT"], color["SOLVE"]]:
         get_random_color(color)
         return
-    bg = color["BLANK"]
-    bgval = bg[color["BLANK"].index("[")+1]
-    bgend = bg[color["BLANK"].index("[")+2:len(bg)]
+    bg = str(color["BLANK"])
+    bgval = bg[bg.index("[")+1]
+    bgend = bg[bg.index("[")+2:len(bg)]
     bg = "\033[" + str(int(bgval) + 1) + bgend
     color["BLANK"] = bg
-    color["SOLVE"] += bg
+    color["SOLVE"] = str(color["SOLVE"]) + bg
     color["ENTRY"] = choice(color_list).value + bg
     color["EXIT"] = choice(color_list).value + bg
 
 
-def init_color() -> Dict[str, Color]:
+def init_color() -> dict[str, Color | str]:
     """
     Initialize the color settings for the maze by creating a dictionary
     with default color values for each maze element.
@@ -383,16 +390,16 @@ def init_color() -> Dict[str, Color]:
         Dict[str, Color]: A dictionary containing the initial color
                           settings.
     """
-    color = {"STRICT": Color.WHITE,
-             "WALL": Color.WHITE,
-             "ENTRY": Color.LIME,
-             "EXIT": Color.RED,
-             "BLANK": Color.BLACK,
-             "SOLVE": Color.GOLD}
+    color: dict[str, Color | str] = {"STRICT": Color.WHITE,
+                                     "WALL": Color.WHITE,
+                                     "ENTRY": Color.LIME,
+                                     "EXIT": Color.RED,
+                                     "BLANK": Color.BLACK,
+                                     "SOLVE": Color.GOLD}
     return color
 
 
-def set_theme(color: Dict[str, Color], theme: Theme):
+def set_theme(color: Dict[str, Color | str], theme: Theme) -> None:
     """
     Set the color settings for the maze based on a selected theme.
     This function updates the color settings for the maze elements according to
@@ -405,9 +412,9 @@ def set_theme(color: Dict[str, Color], theme: Theme):
     color["STRICT"] = theme.value["STRICT"]
     color["WALL"] = theme.value["WALL"]
     color["BLANK"] = theme.value["BLANK"]
-    bg = color["BLANK"].value
-    bgval = bg[color["BLANK"].value.index("[")+1]
-    bgend = bg[color["BLANK"].value.index("[")+2:len(bg)]
+    bg = str(color["BLANK"])
+    bgval = bg[bg.index("[")+1]
+    bgend = bg[bg.index("[")+2:len(bg)]
     bg = "\033[" + str(int(bgval) + 1) + bgend
     color["BLANK"] = bg
     color["SOLVE"] = theme.value["SOLVE"].value + bg

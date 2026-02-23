@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/21 13:12:01 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 11:10:25 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -17,6 +17,7 @@
 
 from src.utils.error import send_error, ConfigurationError
 import re
+from typing import Any
 
 
 # +-------------------------------------------------------------------------+
@@ -105,7 +106,7 @@ def required_config_key(filename: str) -> dict:
     Returns:
         dict: The processed configuration dictionary.
     """
-    dict_config = {}
+    dict_config: dict[str, Any] = {}
     key_required = {"WIDTH": False,
                     "HEIGHT": False,
                     "ENTRY": False,
@@ -183,7 +184,7 @@ def check_int_key(key: str, value: str, min: int, max: int | None) -> int:
         if max and max < key_int:
             raise ValueError(f"{key} must be lower than {max}")
     except Exception as e:
-        send_error(ConfigurationError(), e)
+        send_error(ConfigurationError(), str(e))
 
     return key_int
 
@@ -242,6 +243,7 @@ def check_bool_key(key: str, value: str) -> bool:
         return True
     else:
         send_error(ConfigurationError(), f"{key} must be True or False")
+        return False
 
 
 def check_file_key(key: str, value: str) -> None:
