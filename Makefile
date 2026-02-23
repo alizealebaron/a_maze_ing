@@ -26,6 +26,8 @@ MYPY_FLAGS = --warn-return-any --warn-unused-ignores --ignore-missing-imports \
 
 NAME = a_maze_ing
 CONFIG = default_config.txt
+SRC_FILES = a_maze_ing.py \
+            src/
 
 # ==========================
 #           Colors
