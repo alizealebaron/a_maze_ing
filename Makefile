@@ -79,8 +79,14 @@ clean :
 run : a_maze_ing.py
 	@python3 a_maze_ing.py $(CONFIG)
 
+# Install the virtual environment.
+venv:
+	@echo "$(BLUE)Create virtual environment$(RESET)"
+	@python3 -m venv $(VENV_PATH)
+	@echo "$(BLUE)Run 'source $(VENV_PATH)/bin/activate' to go to the virtual environment."
+
 # Checking flake8 and mypy norm
-lint:
+lint:	
 	@echo "$(PINK)$(BOLD)[Checking mypy and flake8 norm]$(RESET)"
 	@-flake8 ${SRC_FILES}
 	@-mypy ${SRC_FILES} $(MYPY_FLAGS)
@@ -94,6 +100,10 @@ lint-strict:
 # Update pip requirements
 pipfreeze:
 	@pip freeze > requirements.txt
+
+# Install virtual environment and all packages
+all: venv install
+	@echo "$(GREEN)✅ Environment set up ready!$(RESET)"
 
 # Prevent rule to be associated with files.
 .PHONY: install clean run debug lint lint-strict
