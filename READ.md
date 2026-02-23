@@ -1,10 +1,10 @@
-This project has been created as part of the 42 curriculum by alebaron, tcolson.
+*This project has been created as part of the 42 curriculum by alebaron, tcolson.*
 
 # A_maze_ing
 
 ## Comment utiliser a_maze_ing ?
 
-Afin de faciliter l'utilisation de notre programme a_maze_ing, un Makefil vous est fourni et comprend un certains nombre de commande utile pour installer le projet :
+Afin de faciliter l'utilisation de notre programme a_maze_ing, un Makefile vous est fourni et comprend un certains nombre de commande utile pour installer le projet :
 
 ```bash
 
@@ -43,3 +43,33 @@ Enfin, le moteur de génération est conçu comme un module Python réutilisable
 
 ## 📜 Instructions
 
+Premièrement commencons par creer notre environnement virtuel et installer tout nos packages dessus:
+```bash
+make all
+```
+
+Ensuite, une fois notre environnement initialisé, on entre dedans en utilisant:
+```bash
+source .venv/bin/activate
+```
+
+Puis on execute notre programme en donnant un fichier de configuration en second argument.
+```bash
+python3 a_maze_ing.py default_config.txt
+```
+
+## Bonus
+
+Pour prétendre a la note maximale, notre projet doit avoir 5 bonus. Ces bonus sont libres et doivent être un plus dans l'implémentation. Voici donc une liste des additions de notre a_maze_ing:
+
+1. **Couleurs aleatoires** : A chaque exécution, une couleur aleatoire est défini pour chaque élément du labyrinthe.
+
+2. **Thème de caractère** : Depuis le menu, en appelant la 3eme option, vous pourrez choisir parmis les 4 themes ASCII disponible.
+
+3. **Compteur de pas**: En affichant le chemin, le programme precise le nombre de pas necessaires pour aller de l'entrée a la sortie.
+
+4. **Gestion de thème de couleurs** : Différents themes de couleurs sont disponibles et peuvent être défini depuis l'option 4 du menu.
+
+5. **Affichage de la seed** : La seed d'aléatoire permet de s'assurer de retrouver la meme génération a l'execution du programme, elle est affichée a chaque affichage du labyrinthe afin de pouvoir la récuperer au besoin.
+
+6. **Un petit truc en plus** : Un dernier bonus est caché, ne nous quittez pas trop vite...
