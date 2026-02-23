@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 16:27:11 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/21 17:12:43 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -31,6 +31,19 @@ from src.maze.resolution import resolution
 # +-------------------------------------------------------------------------+
 
 if __name__ == "__main__":
+
+    """
+    The main function of the program. It is responsible for:
+    - Getting the arguments from the command line
+    - Recovering the configuration from the file
+    - Generating the maze
+    - Searching for the solution
+    - Generating the output file
+    - Displaying the menu
+
+    It also handles the KeyboardInterrupt exception to display a custom message
+    when the user interrupts the program.
+    """
 
     try:
         # Get arguments

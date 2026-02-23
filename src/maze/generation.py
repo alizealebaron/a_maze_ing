@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 16:03:43 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/21 13:40:12 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -28,6 +28,40 @@ import time
 
 
 def hunt_and_kill(maze: Maze, config: dict) -> None:
+    """
+    Generates a maze using the Hunt-and-Kill algorithm with visual updates.
+
+    The algorithm operates in two alternating phases:
+    1. Kill Phase: A random walk from the current cell, carving a path into
+       unvisited cells until it reaches a dead end.
+    2. Hunt Phase: Scans the grid for an unvisited cell that is adjacent
+       to a visited one.
+       If found, it connects them and starts a new Kill phase.
+
+    This specific implementation includes parity checks to ensure the maze
+    integrity based on the entry/exit coordinates and a "perfect" maze flag.
+
+    Args:
+        maze (Maze): The maze object to be modified. It should provide methods
+            like `is_editable`, `change_cell`, and `show_maze`.
+        config (dict): Configuration dictionary containing:
+            - "WIDTH" (int): Width of the maze.
+            - "HEIGHT" (int): Height of the maze.
+            - "EXIT" (tuple): (x, y) coordinates of the exit.
+            - "ENTRY" (tuple): (x, y) coordinates of the starting cell.
+            - "PERFECT" (bool): Whether to enforce a perfect maze structure.
+            - "SEED" (int, optional): Seed for the random number generator.
+
+    Note:
+        - The function uses a `Live` object for real-time terminal rendering.
+        - Parity logic is used to handle specific constraints where the exit
+          might be blocked or require special pathfinding rules.
+        - Internal helper functions (`kill`, `hunt`, `get_neighbors`, etc.)
+          manage the state and movement within the grid.
+
+    Returns:
+        None: The function modifies the `maze` object in-place.
+    """
 
     width = config["WIDTH"]
     height = config["HEIGHT"]
@@ -60,13 +94,14 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
     parity = (is_parity_ok() is False) and perfect
 
     def get_neighbors(coord: tuple, visited: set, is_unvisited: bool) -> list:
-        nonlocal parity
         x, y = coord
         ex, ey = exit
 
         # Possible direction
         directions = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
         valid_neighbors = []
+
+        parity = (is_parity_ok() is False) and perfect
 
         # Lock some direction to avoid non perfect path
 
@@ -78,7 +113,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
 
                 if (parity is True):
                     # Special case: The exit is in the lower right corner.
-                    if ((ex != width - 1) and (ey != height - 1)):
+                    if (((ex == 0 and ey == 0) or
+                         (ex == width - 1 and ey == height - 1)) is False):
 
                         if (nx, ny) in lock_coord:
                             continue
@@ -163,6 +199,19 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             break_wall_between(v_neigh, exit_node, live)
             visited_cell.add(exit_node)
 
+    def is_exit_connected(maze: Maze, exit: tuple[int, int]) -> bool:
+        x, y = exit
+        directions = [(x, y-1), (x, y+1), (x-1, y), (x+1, y)]
+
+        for nx, ny in directions:
+            try:
+                if maze.maze[(nx, ny)] == Cell.BLANK:
+                    return True
+            except Exception:
+                pass
+
+        return False
+
     def kill(current_cell: tuple[int, int], visited_cell: set, live: Live):
 
         visited_cell.add(current_cell)
@@ -218,7 +267,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         visited_cell.add(exit)
 
         # Special case: The exit is in the lower right corner.
-        if ((ex != width - 1) and (ey != height - 1)):
+        if (((ex == 0 and ey == 0) or
+             (ex == width - 1 and ey == height - 1)) is False):
             visited_cell.add(lock_coord[0])
             visited_cell.add(lock_coord[1])
 
@@ -231,5 +281,6 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             maze_render = Text.from_ansi(maze.show_maze())
             live.update(maze_render)
 
-        exit_connected(maze, config, visited_cell, live)
+        if not is_exit_connected(maze, exit):
+            exit_connected(maze, config, visited_cell, live)
         live.update(Text.from_ansi(maze.show_maze()))

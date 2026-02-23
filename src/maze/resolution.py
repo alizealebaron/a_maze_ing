@@ -6,9 +6,14 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 12:39:18 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/20 14:02:05 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/21 16:40:39 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
+
+# +-------------------------------------------------------------------------+
+# |                               Importation                               |
+# +-------------------------------------------------------------------------+
+
 
 from .maze import Maze, Cell
 from rich.live import Live
@@ -17,21 +22,71 @@ from time import sleep
 from typing import Optional
 
 
+# +-------------------------------------------------------------------------+
+# |                               Functions                                 |
+# +-------------------------------------------------------------------------+
+
+
 def resolution(maze: Maze, config: dict) -> str:
-    """Search the shortest path, draw it and return it"""
+    """
+    Find the shortest path through the maze using a recursive backtracking
+    algorithm.
+
+    This function explores the maze starting from the entry point defined in
+    the config.
+    It can visually animate the solving process using the 'Live' display if
+    enabled.
+    The exploration order is optimized by prioritizing directions that lead
+    toward the exit coordinates.
+
+    Args:
+        maze (Maze): The maze object containing the grid and cell manipulation
+        methods.
+        config (dict): A configuration dictionary containing:
+            - "WIDTH" (int): Grid width.
+            - "HEIGHT" (int): Grid height.
+            - "EXIT" (tuple): Exit coordinates (x, y).
+            - "ENTRY" (tuple): Starting coordinates (x, y).
+            - "HIDE" (bool): If False, animates the solving process.
+
+    Returns:
+        str: A string of directions (e.g., "NSSWEE") representing the path from
+             start to finish.
+    """
 
     width = config["WIDTH"]
     height = config["HEIGHT"]
     path = ""
 
     def explore_cell(cell: tuple[int, int], live: Optional[Live]):
+        """
+        Mark a cell as part of the current path and refresh the UI.
+
+        Args:
+            cell (tuple): The (x, y) coordinates to mark.
+            live (Optional[Live]): The Live display object for
+                real-time rendering.
+        """
         maze.change_cell(cell, Cell.SOLVE)
         if live:
             live.update(Text.from_ansi(maze.show_maze()))
             sleep(0.05)
 
     def get_directions(pos: tuple) -> list[tuple]:
-        """Give the directions in most efficient order"""
+        """
+        Calculate and sort possible movement directions based on proximity
+        to the exit.
+
+        Heuristic: Prioritizes movements that reduce the distance to the
+        target (EXIT) to improve search efficiency.
+
+        Args:
+            pos (tuple): Current (x, y) position.
+
+        Returns:
+            list[tuple]: A list of adjacent (x, y) coordinates sorted by
+            priority.
+        """
         x, y = pos
         endx, endy = config["EXIT"]
         diffx = endx - x
@@ -82,7 +137,20 @@ def resolution(maze: Maze, config: dict) -> str:
         return directions
 
     def solve(pos: tuple, live: Optional[Live]) -> bool:
-        """Look recursively for the shortest path"""
+        """
+        Recursively explore the maze to find the exit.
+
+        This internal helper uses backtracking: if a path leads to a dead end,
+        it reverts the cell state and tries the next available direction.
+
+        Args:
+            pos (tuple): Current (x, y) position.
+            live (Optional[Live]): The Live display object for real-time
+            rendering.
+
+        Returns:
+            bool: True if the exit was found from this branch, False otherwise.
+        """
         x, y = pos
         directions = get_directions(pos)
         nonlocal path

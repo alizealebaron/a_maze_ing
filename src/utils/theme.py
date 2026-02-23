@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/13 11:39:36 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/20 14:31:40 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/21 17:11:19 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -24,6 +24,10 @@ from src.maze.maze import Color
 # +-------------------------------------------------------------------------+
 
 class Theme(Enum):
+    """
+    An enumeration of themes that can be applied to the maze.
+    """
+
     BULBASAUR = {"STRICT": Color.TURQUOISE,
                  "WALL": Color.GREEN,
                  "BLANK": Color.PINK,

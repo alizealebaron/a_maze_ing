@@ -6,12 +6,12 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/20 14:45:34 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/21 13:12:01 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 # +-------------------------------------------------------------------------+
-# |                               Importation                               |
+# |                                 Import                                  |
 # +-------------------------------------------------------------------------+
 
 
@@ -24,13 +24,31 @@ import re
 # +-------------------------------------------------------------------------+
 
 def get_config(filename: str) -> dict:
+    """
+    Main entry point to retrieve and validate the maze configuration.
+
+    Args:
+        filename (str): The path to the configuration file.
+
+    Returns:
+        dict: A dictionary containing the parsed and validated configuration.
+    """
     check_file(filename)
     required_config_format(filename)
     return required_config_key(filename)
 
 
 def check_file(filename: str) -> None:
+    """
+    Checks if the file exists and is accessible.
 
+    Args:
+        filename (str): The path to the file to check.
+
+    Raises:
+        ConfigurationError: If the file is missing, inaccessible,
+        or is a directory.
+    """
     try:
         open(filename, "r")
     except FileNotFoundError:
@@ -48,7 +66,16 @@ def check_file(filename: str) -> None:
 
 
 def required_config_format(filename: str) -> None:
+    """
+    Verifies that every non-comment line follows the 'KEY=VALUE' format.
 
+    Args:
+        filename (str): The path to the configuration file.
+
+    Raises:
+        ConfigurationError: If a line does not match the required
+        regex pattern.
+    """
     with open(filename, "r") as file:
         lines = file.read().splitlines()
 
@@ -64,7 +91,20 @@ def required_config_format(filename: str) -> None:
 
 
 def required_config_key(filename: str) -> dict:
+    """
+    Parses the file, ensures all mandatory keys are present,
+    and validates values.
 
+    Mandatory keys: WIDTH, HEIGHT, ENTRY, EXIT, OUTPUT_FILE, PERFECT.
+    Also performs logic checks (e.g., entry and exit must not be
+    identical or adjacent).
+
+    Args:
+        filename (str): The path to the configuration file.
+
+    Returns:
+        dict: The processed configuration dictionary.
+    """
     dict_config = {}
     key_required = {"WIDTH": False,
                     "HEIGHT": False,
@@ -78,7 +118,6 @@ def required_config_key(filename: str) -> dict:
         lines = file.read().splitlines()
 
     for line in lines:
-
         if line.startswith("#") or line == "":
             continue
 
@@ -94,6 +133,7 @@ def required_config_key(filename: str) -> dict:
             send_error(ConfigurationError(), f"Key \"{key}\" is missing in"
                        f" {filename}.")
 
+    # Value Type Conversion and Range Validation
     dict_config["WIDTH"] = check_int_key("WIDTH",
                                          dict_config["WIDTH"], 5, None)
     dict_config["HEIGHT"] = check_int_key("HEIGHT",
@@ -106,13 +146,12 @@ def required_config_key(filename: str) -> dict:
 
     check_file_key("OUTPUT_FILE", dict_config["OUTPUT_FILE"])
 
+    # Logical validation: Entry vs Exit
     if (dict_config["EXIT"] == dict_config["ENTRY"]):
         send_error(ConfigurationError(), "Entry and Exit is at the "
                    "same place.")
 
-    # Verification that the exit and entry are not adjacent
     ex, ey = dict_config["ENTRY"]
-
     entry_adj = [(ex+1, ey), (ex-1, ey), (ex-1, ey+1), (ex-1, ey-1),
                  (ex+1, ey-1), (ex+1, ey+1), (ex, ey+1), (ex, ey-1)]
 
@@ -125,6 +164,18 @@ def required_config_key(filename: str) -> dict:
 
 
 def check_int_key(key: str, value: str, min: int, max: int | None) -> int:
+    """
+    Validates that a value is an integer and falls within the specified range.
+
+    Args:
+        key (str): The name of the configuration key.
+        value (str): The string value to convert and check.
+        min (int): The minimum allowed value.
+        max (int | None): The maximum allowed value (None for no limit).
+
+    Returns:
+        int: The validated integer.
+    """
     try:
         key_int = int(value)
         if min and min > key_int:
@@ -138,6 +189,19 @@ def check_int_key(key: str, value: str, min: int, max: int | None) -> int:
 
 
 def check_coord_key(key: str, value: str, dict_data: dict) -> tuple:
+    """
+    Validates coordinate strings (x,y) and ensures they
+    fit within the maze dimensions.
+
+    Args:
+        key (str): The name of the coordinate key (e.g., 'ENTRY').
+        value (str): The coordinate string (e.g., '10,5').
+        dict_data (dict): The current config dict containing
+        'WIDTH' and 'HEIGHT'.
+
+    Returns:
+        tuple: A tuple of (int, int) representing the coordinates.
+    """
     split_int = value.split(",")
 
     if len(split_int) != 2:
@@ -162,6 +226,16 @@ def check_coord_key(key: str, value: str, dict_data: dict) -> tuple:
 
 
 def check_bool_key(key: str, value: str) -> bool:
+    """
+    Converts a configuration string into a boolean.
+
+    Args:
+        key (str): The name of the key.
+        value (str): The string value ('True' or 'False').
+
+    Returns:
+        bool: The converted boolean value.
+    """
     if value == "False":
         return False
     elif value == "True":
@@ -171,7 +245,13 @@ def check_bool_key(key: str, value: str) -> bool:
 
 
 def check_file_key(key: str, value: str) -> None:
+    """
+    Ensures the provided value is a valid filename ending in '.txt'.
 
+    Args:
+        key (str): The name of the key.
+        value (str): The filename string to validate.
+    """
     regex = r"^[A-Za-z_]+\.txt$"
     result = re.search(regex, value)
 
