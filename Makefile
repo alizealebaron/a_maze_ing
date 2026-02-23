@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 14:14:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 18:03:43 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/23 18:06:26 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -61,7 +61,7 @@ PINK 	:= \033[35m
 install:
 	@echo "$(CYAN)Installing ${NAME} packages...$(RESET)"
 	@$(PIP) install poetry
-	@$(POETRY) install
+	@$(VENV_POETRY) install
 	@echo "$(GREEN)✅ Packages installed !$(RESET)"
 
 # Run the main file of a_maze_ing in debug mode
