@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:52:15 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 17:53:50 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/24 11:23:16 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -24,7 +24,7 @@ from typing import Any
 # |                                Function                                 |
 # +-------------------------------------------------------------------------+
 
-def get_config(filename: str) -> dict:
+def get_config(filename: str) -> dict[str, Any]:
     """
     Main entry point to retrieve and validate the maze configuration.
 
@@ -91,7 +91,7 @@ def required_config_format(filename: str) -> None:
                        f"comply with the format \"KEY=VALUE\".")
 
 
-def required_config_key(filename: str) -> dict:
+def required_config_key(filename: str) -> dict[str, Any]:
     """
     Parses the file, ensures all mandatory keys are present,
     and validates values.
@@ -195,7 +195,8 @@ def check_int_key(key: str, value: str, min: int, max: int | None) -> int:
     return key_int
 
 
-def check_coord_key(key: str, value: str, dict_data: dict) -> tuple:
+def check_coord_key(key: str, value: str,
+                    dict_data: dict[str, Any]) -> tuple[int, int]:
     """
     Validates coordinate strings (x,y) and ensures they
     fit within the maze dimensions.

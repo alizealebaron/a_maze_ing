@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 13:50:26 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 11:35:19 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -20,8 +20,9 @@ from src.maze.maze import Maze
 from src.output.output import put_maze_val
 from src.menu.menu import print_menu, manage_user_input
 from src.menu.menu import get_random_color, init_color
-from src.utils.error import print_error, send_error, MenuError
-from src.configuration.check_config_error import get_config, ConfigurationError
+from src.utils.error import print_error, \
+                            send_error, MenuError, ConfigurationError
+from src.configuration.check_config_error import get_config
 from src.maze.generation import hunt_and_kill
 from src.maze.resolution import resolution
 

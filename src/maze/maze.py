@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:04 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/23 12:14:59 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 11:19:11 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -163,10 +163,10 @@ class Maze:
                  color: Dict[str, Color | str]) -> None:
         self.width: int = width
         self.height: int = height
-        self.entry: tuple = (-1, -1)
-        self.exit: tuple = (-1, -1)
-        self.maze: dict = {}
-        self.color: dict = color
+        self.entry: tuple[int, int] = (-1, -1)
+        self.exit: tuple[int, int] = (-1, -1)
+        self.maze: dict[tuple[int, int], Cell] = {}
+        self.color: dict[str, Color | str] = color
 
         for x in range(width):
             for y in range(height):
