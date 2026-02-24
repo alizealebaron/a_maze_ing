@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 15:33:35 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 16:45:01 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 11:27:08 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -20,6 +20,7 @@ import random
 from rich.live import Live
 from rich.text import Text
 import time
+from typing import Any
 
 
 # +-------------------------------------------------------------------------+
@@ -27,7 +28,7 @@ import time
 # +-------------------------------------------------------------------------+
 
 
-def hunt_and_kill(maze: Maze, config: dict) -> None:
+def hunt_and_kill(maze: Maze, config: dict[str, Any]) -> None:
     """
     Generates a maze using the Hunt-and-Kill algorithm with visual updates.
 
@@ -102,7 +103,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
     # print(f"is_parity_ok() is False = {is_parity_ok() is False}")
     # print(f"Total : {parity}")
 
-    def get_neighbors(coord: tuple, visited: set, is_unvisited: bool) -> list:
+    def get_neighbors(coord: tuple[int, int], visited: set[tuple[int, int]],
+                      is_unvisited: bool) -> list[tuple[int, int]]:
         x, y = coord
         ex, ey = exit
 
@@ -154,7 +156,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             live.update(Text.from_ansi(maze.show_maze()))
             time.sleep(0.02)
 
-    def break_wall_between(cell1: tuple, cell2: tuple, live: Live) -> None:
+    def break_wall_between(cell1: tuple[int, int],
+                           cell2: tuple[int, int], live: Live) -> None:
         x1, y1 = cell1
         x2, y2 = cell2
 
@@ -165,8 +168,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         try_change_cell(maze, wall_cell, live)
         try_change_cell(maze, cell2, live)
 
-    def exit_connected(maze: Maze, config: dict,
-                       visited_cell: set, live: Live) -> None:
+    def exit_connected(maze: Maze, config: dict[str, Any],
+                       visited_cell: set[tuple[int, int]], live: Live) -> None:
         exit_node = config["EXIT"]
         x, y = exit_node
         direc = [(x, y-2), (x, y+2), (x-2, y), (x+2, y)]
@@ -187,7 +190,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
                 pass
 
         if not neighbors:
-            directions: dict[tuple, list[tuple]] = {
+            directions: dict[tuple[int, int], list[tuple[int, int]]] = {
                 (x+1, y+1): [(x+1, y), (x, y+1)],
                 (x+1, y-1): [(x+1, y), (x, y-1)],
                 (x-1, y+1): [(x-1, y), (x, y+1)],
@@ -222,7 +225,7 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
         return False
 
     def kill(current_cell: tuple[int, int],
-             visited_cell: set, live: Live) -> None:
+             visited_cell: set[tuple[int, int]], live: Live) -> None:
 
         visited_cell.add(current_cell)
 
@@ -241,7 +244,8 @@ def hunt_and_kill(maze: Maze, config: dict) -> None:
             visited_cell.add(next_cell)
             current_cell = next_cell
 
-    def hunt(visited_cell: set, live: Live) -> tuple | None:
+    def hunt(visited_cell: set[tuple[int, int]],
+             live: Live) -> tuple[int, int] | None:
 
         # Calculing parity of the algorithm
 

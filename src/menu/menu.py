@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 16:45:08 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 11:30:13 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -18,7 +18,7 @@
 from src.maze.maze import Color, Maze
 from src.utils.effect import Effect
 from src.utils.theme import Theme
-from typing import Dict, Callable, cast
+from typing import Dict, Callable, cast, Any
 from random import choice, seed
 from src.maze.generation import hunt_and_kill
 from src.maze.resolution import resolution
@@ -29,7 +29,7 @@ import os
 # |                            Input Functions                              |
 # +-------------------------------------------------------------------------+
 
-def regen_maze(maze: Maze, config: dict, color: dict) -> Maze:
+def regen_maze(maze: Maze, config: dict[str, Any]) -> Maze:
     """
     Regenerate a new maze using the Hunt-and-Kill algorithm and solve it.
     This function first cleans the current maze, then generates a new maze
@@ -54,7 +54,7 @@ def regen_maze(maze: Maze, config: dict, color: dict) -> Maze:
     return maze
 
 
-def show_hide_path(maze: Maze, config: dict) -> None:
+def show_hide_path(maze: Maze, config: dict[str, Any]) -> None:
     """
     Toggle the display of the path from the entry to the exit in the maze.
     This function checks the current state of the "HIDE" setting in the config.
@@ -191,7 +191,7 @@ def end_program() -> None:
 # |                                Variable                                 |
 # +-------------------------------------------------------------------------+
 
-dict_menu_data: dict[int, dict[str, str | Color | Callable]] = {
+dict_menu_data: dict[int, dict[str, Any]] = {
     1: {
         "name": "Re-generate a new maze",
         "color": Color.SKY_BLUE,
@@ -268,7 +268,7 @@ dict_theme_data: dict[int, dict[str, str | Color | Theme | None]] = {
 # +-------------------------------------------------------------------------+
 
 def manage_user_input(user_input: int, color: Dict[str, Color | str],
-                      maze: Maze, config: dict) -> None:
+                      maze: Maze, config: dict[str, Any]) -> None:
     """
         Manage the user's menu selection by calling the corresponding function
         based on the input.
@@ -284,20 +284,20 @@ def manage_user_input(user_input: int, color: Dict[str, Color | str],
                            that may be needed for certain functions.
     """
     if int(user_input) == 1:
-        cast(Callable, dict_menu_data[1]["function"])(maze, config, color)
+        cast(Callable[..., Any], dict_menu_data[1]["function"])(maze, config)
     elif int(user_input) == 2:
-        cast(Callable, dict_menu_data[2]["function"])(maze, config)
+        cast(Callable[..., Any], dict_menu_data[2]["function"])(maze, config)
     elif int(user_input) == 3:
-        cast(Callable, dict_menu_data[3]["function"])(maze)
+        cast(Callable[..., Any], dict_menu_data[3]["function"])(maze)
     elif int(user_input) == 4:
-        cast(Callable, dict_menu_data[4]["function"])(maze, color)
+        cast(Callable[..., Any], dict_menu_data[4]["function"])(maze, color)
     elif int(user_input) == 5:
-        cast(Callable, dict_menu_data[5]["function"])()
+        cast(Callable[..., Any], dict_menu_data[5]["function"])()
     else:
         print(f"\nInvalid choice, {user_input} is not an option")
 
 
-def print_menu(config: dict) -> None:
+def print_menu(config: dict[str, Any]) -> None:
     """
     Print the menu to the console, displaying the available options for the
     user to interact with the maze.
@@ -335,7 +335,7 @@ def print_menu(config: dict) -> None:
     print("")
 
 
-def print_seed(config: dict) -> None:
+def print_seed(config: dict[str, Any]) -> None:
     """
     Print the current seed used for maze generation to the console.
 

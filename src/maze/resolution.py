@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 12:39:18 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/23 10:52:05 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 11:23:42 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -19,7 +19,7 @@ from .maze import Maze, Cell
 from rich.live import Live
 from rich.text import Text
 from time import sleep
-from typing import Optional
+from typing import Optional, Any
 
 
 # +-------------------------------------------------------------------------+
@@ -27,7 +27,7 @@ from typing import Optional
 # +-------------------------------------------------------------------------+
 
 
-def resolution(maze: Maze, config: dict) -> str:
+def resolution(maze: Maze, config: dict[str, Any]) -> str:
     """
     Find the shortest path through the maze using a recursive backtracking
     algorithm.
@@ -72,7 +72,7 @@ def resolution(maze: Maze, config: dict) -> str:
             live.update(Text.from_ansi(maze.show_maze()))
             sleep(0.05)
 
-    def get_directions(pos: tuple) -> list[tuple]:
+    def get_directions(pos: tuple[int, int]) -> list[tuple[int, int]]:
         """
         Calculate and sort possible movement directions based on proximity
         to the exit.
@@ -136,7 +136,7 @@ def resolution(maze: Maze, config: dict) -> str:
                     directions.append((x, y+1))
         return directions
 
-    def solve(pos: tuple, live: Optional[Live]) -> bool:
+    def solve(pos: tuple[int, int], live: Optional[Live]) -> bool:
         """
         Recursively explore the maze to find the exit.
 
