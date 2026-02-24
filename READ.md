@@ -165,6 +165,7 @@ Pour prétendre à la note maximale, notre projet doit avoir 5 bonus. Ces bonus 
 **Ressources générales**
 
 - [github.com/Overtekk/A_Maze_ing](https://github.com/Overtekk/A_Maze_ing)
+- [geeksforgeeks.org/python](https://www.geeksforgeeks.org/python/python-programming-language-tutorial/)
 
 **Génération du labyrinthe**
 
