@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/10 15:31:24 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/21 17:08:07 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/24 11:56:28 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -15,7 +15,7 @@
 # +-------------------------------------------------------------------------+
 
 
-from src.maze.maze import Maze, Cell
+from src.maze.Maze import Maze, Cell
 from typing import Tuple
 
 

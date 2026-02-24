@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/09 15:30:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/24 11:35:19 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 12:02:03 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -16,14 +16,14 @@
 
 import sys
 import os
-from src.maze.maze import Maze
+from src.maze.Maze import Maze
 from src.output.output import put_maze_val
 from src.menu.menu import print_menu, manage_user_input
 from src.menu.menu import get_random_color, init_color
 from src.utils.error import print_error, \
                             send_error, MenuError, ConfigurationError
 from src.configuration.check_config_error import get_config
-from src.maze.generation import hunt_and_kill
+from src.maze.Maze_Generator import Maze_Generator
 from src.maze.resolution import resolution
 
 
@@ -67,7 +67,8 @@ if __name__ == "__main__":
         maze = Maze(config["WIDTH"], config["HEIGHT"],
                     config["ENTRY"], config["EXIT"], color)
 
-        hunt_and_kill(maze, config)
+        maze_gen = Maze_Generator()
+        maze_gen.hunt_and_kill(maze, config)
 
         # Searching for solution
         path = resolution(maze, config)
