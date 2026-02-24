@@ -1,230 +1,188 @@
-# 🦆 Module Maze - Guide Complet
+# 🌀 A Maze'ing - Générateur et Solveur de Labyrinthes
 
-## 📋 Vue d'ensemble
+## 📌 Vue d'ensemble
 
-Le module `maze` est le cœur du programme. Il contient toute la logique pour créer, manipuler, générer et résoudre des labyrinthes. Le module est composé de trois fichiers principaux qui travaillent ensemble.
+Ce projet contient une suite complète pour générer et résoudre des labyrinthes. Il utilise l'algorithme **Hunt and Kill** pour créer des labyrinthes parfaits et un algorithme de **backtracking** pour les résoudre.
 
 ---
 
-## 📁 Structure des fichiers
+## 📁 Structure du projet
 
-### 1. **maze.py** - Les fondations du labyrinthe
+### `Maze.py` - Classe Maze
+Représente la structure d'un labyrinthe avec toutes ses propriétés et méthodes.
 
-Ce fichier définit les classes et énumérations de base qui représentent un labyrinthe.
+**Éléments principaux:**
+- **Cell (Enum):** Types de cellules du labyrinthe
+  - `ENTRY (E)` - Point d'entrée
+  - `EXIT (X)` - Point de sortie
+  - `BLANK ( )` - Passage vide
+  - `WALL (█)` - Mur
+  - `STRICT (▒)` - Zone restreinte (le logo "42")
+  - `SOLVE (•)` - Partie de la solution
 
-#### 🎨 Classe `Color` (Énumération)
-Contient tous les codes couleur ANSI pour afficher le labyrinthe en couleur dans le terminal.
-- **Couleurs simples** : ROUGE, VERT, JAUNE, BLEU, etc.
-- **Couleurs avancées** : Orange, Corail, Chaux, Brun, etc.
-- **Réinitialisation** : `RESET` pour revenir à la couleur par défaut
+- **Color (Enum):** Couleurs ANSI pour l'affichage en terminal (16 couleurs + 256 palette)
 
-#### 🧱 Classe `Cell` (Énumération)
-Représente chaque type de cellule possible dans le labyrinthe :
-- `ENTRY` ("E") : Point d'entrée du labyrinthe
-- `EXIT` ("X") : Point de sortie à atteindre
-- `BLANK` (" ") : Chemin vide où on peut se déplacer
-- `WALL` ("█") : Mur infranchissable
-- `STRICT` ("▒") : Zone interdite/logo (ne peut pas être modifiée)
-- `SOLVE` ("•") : Marque le chemin de la solution
-
-#### 🎭 Classe `Maze` - Le cœur du système
-
-C'est la classe principale qui représente un labyrinthe complet.
-
-**Attributs principaux :**
-- `width` et `height` : Dimensions du labyrinthe
-- `entry` et `exit` : Coordonnées des points d'entrée et sortie
-- `maze` : Dictionnaire qui stocke chaque cellule et son type
-- `color` : Palette de couleurs utilisée pour l'affichage
-- `key` : Le thème graphique actuel (comment afficher les cellules)
-
-**Thèmes disponibles :**
-- **Default** : Caractères simples (E, X, █, etc.)
-- **Cubic** : Emojis de carrés colorés
-- **Emojis** : Emojis variés (portes, briques, etc.)
-- **Animal** : Animaux (phoque, dinosaure, etc.)
-
-**Méthodes importantes :**
-
+**Méthodes essentielles:**
 | Méthode | Description |
 |---------|-------------|
-| `change_cell(cell, val)` | Modifie le type d'une cellule (si éditable) |
-| `is_editable(cell)` | Vérifie si une cellule peut être modifiée |
-| `put_logo()` | Ajoute le logo "42" au centre du labyrinthe |
-| `clean_maze()` | Réinitialise tous les chemins en murs |
-| `clean_path()` | Efface la solution affichée |
-| `show_maze()` | Affiche le labyrinthe formaté avec couleurs et bordures |
-| `change_keys(key)` | Change le thème graphique |
+| `change_cell()` | Modifie le type d'une cellule |
+| `is_editable()` | Vérifie si une cellule peut être modifiée |
+| `show_maze()` | Retourne la représentation visuelle du labyrinthe |
+| `clean_maze()` | Remet tous les murs à zéro |
+| `clean_path()` | Efface le chemin de la solution |
+| `put_logo()` | Place le logo "42" au centre du labyrinthe |
+| `change_keys()` | Change le thème visuel (4 thèmes disponibles) |
 
-**Exemple d'utilisation :**
+**Thèmes disponibles:**
+- Default (ASCII art)
+- Cubic (carrés colorés 🟦🟥⬛)
+- Emojis (🚪🏁🧱)
+- Animal (animaux 🦭🦕🦖)
+
+---
+
+### `Maze_Generator.py` - Classe Maze_Generator
+Génère un labyrinthe en utilisant l'algorithme **Hunt and Kill**.
+
+**Fonctionnement:**
+1. **Phase de Chasse (Kill):** Parcours aléatoire depuis une cellule, creusant des passages jusqu'à une impasse
+2. **Phase de Chasse (Hunt):** Scanne la grille pour trouver une cellule non visitée adjacente à une visitée
+3. Répète jusqu'à visiter tous les passages
+
+**Caractéristiques:**
+- Gère les contraintes de **parité** pour assurer des labyrinthes "parfaits"
+- Évite le logo "42" pendant la génération
+- Affichage en temps réel avec animation
+- Support des graines aléatoires pour reproductibilité
+- Connecte correctement l'entrée et la sortie
+
+**Paramètres de configuration:**
 ```python
-# Créer un labyrinthe 20x20
-maze = Maze(20, 20, (1, 1), (18, 18), colors)
+config = {
+    "WIDTH": 31,           # Largeur du labyrinthe
+    "HEIGHT": 17,          # Hauteur du labyrinthe
+    "ENTRY": (0, 0),       # Coordonnées d'entrée
+    "EXIT": (30, 16),      # Coordonnées de sortie
+    "PERFECT": True,       # Forcer un labyrinthe parfait
+    "SEED": 12345          # Graine aléatoire (optionnel)
+}
+```
 
-# Voir le labyrinthe
+---
+
+### `resolution.py` - Fonction resolution()
+Résout le labyrinthe en trouvant le chemin le plus court de l'entrée à la sortie.
+
+**Algorithme:**
+- **Backtracking récursif:** Explore le labyrinthe, marque les chemins visités
+- **Heuristique:** Priorise les directions qui rapprochent de la sortie
+- Revient en arrière si une impasse est atteinte
+
+**Retour:**
+Chaîne de directions: `"NSEWNSEW..."` (Nord, Sud, Est, Ouest)
+
+**Animations:**
+- Affiche l'exploration en temps réel (sauf si `HIDE: True`)
+- Marque le chemin visité avec `•`
+- Option `HIDE` pour résoudre silencieusement
+
+---
+
+## 🚀 Utilisation
+
+### Générer un labyrinthe
+```python
+from Maze import Maze, Color
+from Maze_Generator import Maze_Generator
+
+# Créer un labyrinthe
+maze = Maze(
+    width=31, height=17,
+    entry=(0, 0), exit=(30, 16),
+    color={...}  # couleurs pour chaque type de cellule
+)
+
+# Générer avec Hunt and Kill
+generator = Maze_Generator()
+config = {
+    "WIDTH": 31, "HEIGHT": 17,
+    "ENTRY": (0, 0), "EXIT": (30, 16),
+    "PERFECT": True, "SEED": 42
+}
+generator.hunt_and_kill(maze, config)
+
+# Afficher
 print(maze.show_maze())
-
-# Changer le thème
-maze.change_keys("Emojis")
 ```
 
----
-
-### 2. **generation.py** - La création du labyrinthe
-
-Ce fichier contient l'algorithme pour **générer automatiquement** un labyrinthe parfait.
-
-#### 🎲 Fonction `hunt_and_kill(maze, config)`
-
-C'est l'algorithme principal de génération. Il fonctionne en deux phases alternées :
-
-**Phase 1 - "Kill" (Tuer le chemin)**
-- Démarre d'une cellule actuelle
-- Explore aléatoirement les cellules non visitées voisines
-- Crée un chemin en cassant les murs
-- S'arrête quand il n'y a plus de voisins à explorer (cul-de-sac)
-
-**Phase 2 - "Hunt" (Chasser)**
-- Scanne toute la grille pour trouver une cellule non visitée
-- Qui est adjacente à une cellule déjà visitée
-- Connecte ces deux cellules ensemble
-- Relance la phase "Kill" depuis cette nouvelle cellule
-
-Cet algorithme garantit que :
-✅ Chaque cellule du labyrinthe est accessible
-✅ Il n'existe qu'un seul chemin entre deux points quelconques
-✅ Il n'y a pas de boucles ni de passages inutiles
-
-**Configuration requise (config) :**
+### Résoudre un labyrinthe
 ```python
+from resolution import resolution
+
 config = {
-    "WIDTH": 20,          # Largeur du labyrinthe
-    "HEIGHT": 20,         # Hauteur du labyrinthe
-    "ENTRY": (1, 1),      # Coordonnées d'entrée
-    "EXIT": (18, 18),     # Coordonnées de sortie
-    "PERFECT": True,      # Générer un labyrinthe parfait
-    "SEED": 12345         # (Optionnel) Graine aléatoire
+    "WIDTH": 31, "HEIGHT": 17,
+    "EXIT": (30, 16), "ENTRY": (0, 0),
+    "HIDE": False  # True pour pas d'animation
 }
-```
-
-**Fonctionnalités spéciales :**
-- 🎬 **Affichage en temps réel** : Vous voyez le labyrinthe se générer étape par étape
-- 🔒 **Logique de parité** : S'assure que la sortie est toujours atteignable
-- 🎨 **Animation fluide** : Utilise `Live` de la bibliothèque `rich` pour l'affichage
-
-**Exemple d'utilisation :**
-```python
-from src.maze.generation import hunt_and_kill
-
-hunt_and_kill(maze, config)
-# Le labyrinthe est modifié en place
-```
-
----
-
-### 3. **resolution.py** - La résolution du labyrinthe
-
-Ce fichier contient l'algorithme pour **trouver le chemin** du début à la fin.
-
-#### 🧭 Fonction `resolution(maze, config)`
-
-Utilise un algorithme de **backtracking récursif** pour explorer le labyrinthe.
-
-**Comment ça marche :**
-1. Démarre du point d'entrée (`ENTRY`)
-2. Essaie chaque direction possible (intelligemment ordonnées)
-3. Marque les cellules visitées avec le symbole "•" (`SOLVE`)
-4. Si une direction ne mène nulle part (cul-de-sac), recule et essaie une autre
-5. S'arrête quand la sortie (`EXIT`) est trouvée
-
-**Optimisation intelligente - La fonction `get_directions(pos)` :**
-- Au lieu d'explorer au hasard, elle **priorise les directions vers la sortie**
-- Calcule la distance restante vers la cible
-- Explore d'abord les directions qui réduisent cette distance
-- Accélère très fortement la résolution
-
-**Configuration requise (config) :**
-```python
-config = {
-    "WIDTH": 20,        # Largeur du labyrinthe
-    "HEIGHT": 20,       # Hauteur du labyrinthe
-    "ENTRY": (1, 1),    # Point de départ
-    "EXIT": (18, 18),   # Point d'arrivée
-    "HIDE": False       # False = animation, True = rapide sans affichage
-}
-```
-
-**Valeur de retour :**
-Retourne une chaîne de caractères représentant le chemin :
-- `"N"` = Nord (haut, y-1)
-- `"S"` = Sud (bas, y+1)
-- `"E"` = Est (droite, x+1)
-- `"W"` = Ouest (gauche, x-1)
-
-Exemple : `"EESSWWNNEE"` = Droite, Droite, Bas, Bas, Gauche, Gauche, Haut, Haut, Droite, Droite
-
-**Exemple d'utilisation :**
-```python
-from src.maze.resolution import resolution
 
 chemin = resolution(maze, config)
-print(f"Chemin trouvé: {chemin}")
-```
-
----
-
-## 🔄 Workflow complet
-
-Voici comment les trois fichiers travaillent ensemble :
-
-```
-1. Créer un objet Maze (maze.py)
-   ↓
-2. Générer le labyrinthe avec hunt_and_kill (generation.py)
-   ↓
-3. Résoudre le labyrinthe avec resolution (resolution.py)
-   ↓
-4. Afficher le labyrinthe résolu (maze.py)
-```
-
-**Exemple complet :**
-```python
-from src.maze.maze import Maze
-from src.maze.generation import hunt_and_kill
-from src.maze.resolution import resolution
-
-# Étape 1 : Création
-config = {
-    "WIDTH": 25,
-    "HEIGHT": 25,
-    "ENTRY": (1, 1),
-    "EXIT": (23, 23),
-    "PERFECT": True
-}
-
-maze = Maze(25, 25, (1, 1), (23, 23), colors)
-
-# Étape 2 : Génération
-hunt_and_kill(maze, config)
-
-# Étape 3 : Résolution
-chemin = resolution(maze, config)
-
-# Étape 4 : Affichage
-print(maze.show_maze())
 print(f"Solution: {chemin}")
 ```
 
 ---
 
-## 🎯 Points clés à retenir
+## 🎨 Affichage en couleurs
 
-| Aspect | Explication |
-|--------|------------|
-| **Cellules** | Chaque point du labyrinthe est une cellule avec un type (mur, chemin, etc.) |
-| **Grille** | Le labyrinthe est stocké dans un dictionnaire de coordonnées (x, y) |
-| **Génération** | L'algorithme "Hunt and Kill" crée des labyrinthes parfaits (toujours une solution) |
-| **Résolution** | Le backtracking récursif trouve le chemin le plus court |
-| **Optimisation** | Les heuristiques (prioriser les directions) rendent tout plus rapide |
-| **Affichage** | Chaque cellule a une couleur et un symbole configurable via les thèmes |
-| **Logo** | Le célèbre logo "42" est automatiquement placé au centre si l'espace le permet |
+Les labyrinthes s'affichent en couleur dans le terminal grâce aux codes ANSI. Exemple:
+```
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒███████████████████▒
+▒█E    █           █▒
+▒█████ █ █████████ █▒
+▒█ █X  █   █   █   █▒
+▒█ ███ ███ █ █ █████▒
+▒█     █     █     █▒
+▒█ █████ █████████ █▒
+▒█     ▒   ▒▒▒   █ █▒
+▒█ ███ ▒██ ██▒ ███ █▒
+▒█ █ █ ▒▒▒ ▒▒▒     █▒
+▒█ █ █ ██▒ ▒██ █████▒
+▒█   █ █ ▒ ▒▒▒     █▒
+▒███ █ █ █ ███████ █▒
+▒█   █ █       █   █▒
+▒█████ █████ █ █ █ █▒
+▒█     █     █ █ █ █▒
+▒█ █████████████ █ █▒
+▒█               █ █▒
+▒███████████████████▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+```
+
+---
+
+## ⚙️ Détails techniques
+
+### Parité et labyrinthes parfaits
+L'algorithme gère la **parité** (paire/impaire) des coordonnées pour assurer que:
+- Aucune cellule n'est isolée
+- Il existe un chemin unique entre deux points
+- Les contraintes géométriques sont respectées
+
+### Logo "42"
+Si le labyrinthe est assez grand (>9×7), un logo "42" est inséré au centre comme zone restreinte (impossible à traverser).
+
+### Performances
+- Génération en temps réel avec rafraîchissement 25 Hz
+- Résolution animée avec pas de 0.05s
+- Optimisé pour les grilles de taille modérée
+
+---
+
+## 📋 Résumé des fichiers
+
+| Fichier | Rôle |
+|---------|------|
+| `Maze.py` | Représentation et manipulation du labyrinthe |
+| `Maze_Generator.py` | Génération par algorithme Hunt and Kill |
+| `resolution.py` | Résolution par backtracking |
+| `__init__.py` | Initialisation du package |
