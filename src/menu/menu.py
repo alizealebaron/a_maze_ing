@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/12 10:09:51 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/24 11:30:13 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 12:02:52 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -15,12 +15,12 @@
 # +-------------------------------------------------------------------------+
 
 
-from src.maze.maze import Color, Maze
+from src.maze.Maze import Color, Maze
 from src.utils.effect import Effect
 from src.utils.theme import Theme
 from typing import Dict, Callable, cast, Any
 from random import choice, seed
-from src.maze.generation import hunt_and_kill
+from src.maze.Maze_Generator import Maze_Generator
 from src.maze.resolution import resolution
 import os
 
@@ -45,7 +45,8 @@ def regen_maze(maze: Maze, config: dict[str, Any]) -> Maze:
     """
 
     maze.clean_maze()
-    hunt_and_kill(maze, config)
+    maze_gen = Maze_Generator()
+    maze_gen.hunt_and_kill(maze, config)
     if not config["HIDE"]:
         os.system("clear")
     path = resolution(maze, config)
