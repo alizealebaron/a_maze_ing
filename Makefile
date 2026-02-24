@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/16 14:14:12 by alebaron        #+#    #+#               #
-#  Updated: 2026/02/23 18:06:26 by alebaron        ###   ########.fr        #
+#  Updated: 2026/02/24 12:07:14 by alebaron        ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -30,6 +30,10 @@ NAME = a_maze_ing
 CONFIG = default_config.txt
 SRC_FILES = a_maze_ing.py \
             src/
+
+PROJECT_VERSION = $(shell grep -m 1 '^version =' pyproject.toml | cut -d '"' -f 2)
+PROJECT_NAME = $(shell grep -m 1 '^name =' pyproject.toml | cut -d '"' -f 2 | tr '-' '_')
+TAR_FILE = $(PROJECT_NAME)-$(PROJECT_VERSION).tar.gz
 
 # ==========================
 #           Colors
@@ -107,5 +111,10 @@ pipfreeze:
 all: venv install
 	@echo "$(GREEN)✅ Environment set up ready!$(RESET)"
 
+package:
+	@echo "$(PINK)$(BOLD)🔨 Construction du package source (.tar.gz)...$(RESET)"
+	@poetry build
+	@echo "✅ Archivage terminé : $(TAR_FILE)"
+
 # Prevent rule to be associated with files.
-.PHONY: install clean run debug lint lint-strict
+.PHONY: install clean run debug lint lint-strict all pipfreeze run venv package

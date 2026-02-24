@@ -7,6 +7,9 @@ authors = [
     {name = "tcolson",email = "tcolson@student.42lehavre.fr"}
 ]
 license = {text = "CC0-1.0"}
+packages = [
+    { include = "maze", from = "src" }
+]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
