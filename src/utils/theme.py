@@ -6,7 +6,7 @@
 #  By: alebaron, tcolson                         +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/02/13 11:39:36 by tcolson         #+#    #+#               #
-#  Updated: 2026/02/23 11:01:06 by tcolson         ###   ########.fr        #
+#  Updated: 2026/02/24 11:56:28 by tcolson         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -16,7 +16,7 @@
 
 
 from enum import Enum
-from src.maze.maze import Color
+from src.maze.Maze import Color
 
 
 # +-------------------------------------------------------------------------+
